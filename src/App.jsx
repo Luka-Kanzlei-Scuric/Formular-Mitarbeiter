@@ -1,14 +1,11 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import PrivatinsolvenzFormular from "./components/PrivatinsolvenzFormular";
+import { Routes, Route } from "react-router-dom";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/form/:taskId" element={<PrivatinsolvenzFormular />} />
-        <Route path="*" element={<h1>404 Not Found</h1>} />
-      </Routes>
-    </Router>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/form/:taskId" element={<PrivatinsolvenzFormular />} />
+    </Routes>
   );
 }
 
