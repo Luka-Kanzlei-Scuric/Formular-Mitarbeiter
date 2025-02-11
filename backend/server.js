@@ -31,8 +31,7 @@ app.get('/', (req, res) => {
 
 // Routes
 app.use('/api/forms', require('./routes/formRoutes'));
-app.use('/api/clickup', require('./routes/clickupRoutes'));
-app.use('/clickup', require('./routes/clickupAuthRoutes'));
+
 
 // Error Handler
 app.use((err, req, res, next) => {
