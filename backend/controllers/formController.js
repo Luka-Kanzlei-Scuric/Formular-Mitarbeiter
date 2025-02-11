@@ -70,7 +70,7 @@ exports.createForm = async (req, res) => {
 
         res.status(201).json({
             message: "Formular erstellt!",
-            formURL: `https://deinfrontend.com/form/${req.body.taskId}`
+            formURL: `${process.env.FRONTEND_URL}/form/${req.body.taskId}`
         });
 
     } catch (error) {
