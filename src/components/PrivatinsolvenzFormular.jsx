@@ -4,6 +4,7 @@ import { Alert, AlertDescription } from './ui/alert';  // Pfad angepasst
 import { AlertTriangle } from 'lucide-react';
 import { useParams } from 'react-router-dom'; // NEU: useParams für taskId aus URL
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://privatinsolvenz-backend.onrender.com';
 
 const PrivatinsolvenzFormular = () => {
     const { taskId } = useParams();
@@ -124,33 +125,18 @@ const PrivatinsolvenzFormular = () => {
             [name]: checked
         }));
     };
+
+
     const saveFormData = async () => {
         setIsSaving(true);
         setSaveError(null);
 
-        // Prüfen, ob sich Daten geändert haben, bevor wir speichern
-        if (originalData && JSON.stringify(formData) === JSON.stringify(originalData)) {
-            console.log("ℹ️ Keine Änderungen erkannt. Speichern nicht notwendig.");
-            setIsSaving(false);
-            return;
-        }
-
-        if (!taskId) {
-            console.error("❌ Keine Task ID gefunden, Speichern abgebrochen!");
-            return;
-        }
-
-        const updatedFormData = {
-            ...formData,
-            taskId // Nutze die taskId aus useParams()
-        };
-
         try {
-            console.log("📤 Sende Daten an Backend:", updatedFormData);
-            const response = await fetch(`https://privatinsolvenz-backend.onrender.com/api/forms/${taskId}`, {
-                method: formData.taskId ? 'PUT' : 'POST',
+            console.log("📤 Sende Daten an Backend:", formData);
+            const response = await fetch(`${BACKEND_URL}/api/forms/${taskId}`, {
+                method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(updatedFormData) // HIER wird `updatedFormData` gesendet!
+                body: JSON.stringify(formData)
             });
 
             if (!response.ok) throw new Error('Fehler beim Speichern');
@@ -164,25 +150,30 @@ const PrivatinsolvenzFormular = () => {
             setIsSaving(false);
         }
     };
+
     // Nach saveFormData:
     const loadFormData = async (taskId) => {
         try {
             console.log("📥 Lade Formulardaten für Task ID:", taskId);
-            const response = await fetch(`https://privatinsolvenz-backend.onrender.com/api/forms/${taskId}`);
+            console.log("🔗 Backend URL:", BACKEND_URL); // Debug-Log
+
+            const response = await fetch(`${BACKEND_URL}/api/forms/${taskId}`);
 
             if (!response.ok) {
+                console.error("❌ Server Antwort nicht OK:", response.status);
                 throw new Error('Fehler beim Laden der Daten');
             }
 
             const data = await response.json();
-            console.log("✅ Geladene Formulardaten:", JSON.stringify(data, null, 2));
+            console.log("✅ Geladene Formulardaten:", data);
 
-            setFormData({ ...data, taskId }); // Stelle sicher, dass taskId immer gesetzt ist
-            setOriginalData({ ...data, taskId }); // Speichert die Originaldaten
+            setFormData({ ...data, taskId });
+            setOriginalData({ ...data, taskId });
         } catch (error) {
             console.error('❌ Fehler beim Laden:', error);
         }
     };
+
 
     useEffect(() => {
         if (!taskId) {
