@@ -22,53 +22,60 @@ exports.getFormByTaskId = async (req, res) => {
 };
 
 // Create Form
+
 exports.createForm = async (req, res) => {
     try {
-        console.log("📝 CreateForm aufgerufen mit:", req.body);
+        console.log("CreateForm aufgerufen mit:", req.body);
 
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-
-        const { taskId, leadName } = req.body;
-
-        if (!taskId) {
-            console.warn("⚠ `taskId` ist erforderlich!");
+        if (!req.body.taskId) {
             return res.status(400).json({ message: "taskId ist erforderlich!" });
         }
 
-        const existingForm = await Form.findOne({ taskId });
+        const existingForm = await Form.findOne({ taskId: req.body.taskId });
         if (existingForm) {
-            console.warn("⚠ Formular existiert bereits:", existingForm);
             return res.status(400).json({ message: "Formular existiert bereits" });
         }
 
-        // Formular erstellen
-        const form = new Form({ taskId, leadName });
+        // Formular in MongoDB erstellen
+        const form = new Form({
+            taskId: req.body.taskId,
+            leadName: req.body.leadName
+        });
+
         const savedForm = await form.save();
+        console.log("✅ Formular erfolgreich in MongoDB erstellt:", savedForm);
 
-        // URL für das Formular generieren
-        const frontendURL = process.env.FRONTEND_URL || "http://localhost:5173";
-        const formURL = `${frontendURL}/form/${taskId}`;
-        console.log(`🔗 Formular-Link generiert: ${formURL}`);
+        // ClickUp-API aufrufen
+        const CLICKUP_API_KEY = process.env.CLICKUP_API_KEY;
+        if (!CLICKUP_API_KEY) {
+            throw new Error("❌ ClickUp API Key fehlt! Setze ihn in der .env Datei oder in Render.");
+        }
 
-        // Link zurück an ClickUp senden
-        const clickUpAPIKey = process.env.CLICKUP_API_KEY;
-        const clickUpFieldId = process.env.CLICKUP_FORM_LINK_FIELD_ID;
+        const clickupTaskId = req.body.taskId; // Task-ID von ClickUp
+        const updateURL = `https://api.clickup.com/api/v2/task/${clickupTaskId}`;
 
-        const clickUpResponse = await axios.post(
-            `https://api.clickup.com/api/v2/task/${taskId}/field/${clickUpFieldId}`,
-            { value: formURL },
-            { headers: { Authorization: clickUpAPIKey } }
-        );
+        const response = await axios.put(updateURL, {
+            custom_fields: [{
+                id: "699bcb25-bbe2-454b-a6cd-f255681e7940", // Die Field ID von ClickUp
+                value: `https://deinfrontend.com/form/${req.body.taskId}`
+            }]
+        }, {
+            headers: {
+                "Authorization": CLICKUP_API_KEY,
+                "Content-Type": "application/json"
+            }
+        });
 
-        console.log("✅ Link erfolgreich an ClickUp gesendet!", clickUpResponse.data);
+        console.log("✅ ClickUp Update erfolgreich:", response.data);
 
-        res.status(201).json({ message: "Formular erstellt!", formURL });
+        res.status(201).json({
+            message: "Formular erstellt!",
+            formURL: `https://deinfrontend.com/form/${req.body.taskId}`
+        });
+
     } catch (error) {
-        console.error("❌ Fehler beim Erstellen des Formulars:", error.response ? error.response.data : error.message);
-        res.status(500).json({ message: "Interner Serverfehler" });
+        console.error("❌ Fehler beim Erstellen des Formulars:", error.response?.data || error.message);
+        res.status(500).json({ message: "Interner Serverfehler", error: error.message });
     }
 };
 
