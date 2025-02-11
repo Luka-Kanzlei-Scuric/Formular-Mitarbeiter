@@ -2,9 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';  // Pfad angepasst
 import { Alert, AlertDescription } from './ui/alert';  // Pfad angepasst
 import { AlertTriangle } from 'lucide-react';
+import { useParams } from 'react-router-dom'; // NEU: useParams für taskId aus URL
 
 
-const PrivatinsolvenzFormular = () => { // Hier öffnen wir die Komponente
+const PrivatinsolvenzFormular = () => {
+    const { taskId } = useParams();
+    console.log("🔍 useParams Task ID:", taskId); // Debugging
+
+    if (!taskId) {
+        return <h2 className="text-red-500 text-center">Fehler: Keine Task ID gefunden!</h2>;
+    }
+
     const [formData, setFormData] = useState({
 
         taskId: '',        // Neue Eigenschaft
@@ -51,6 +59,8 @@ const PrivatinsolvenzFormular = () => { // Hier öffnen wir die Komponente
         ratenzahlungMonate: '2',
         benutzerdefinierteMonate: ''
     });
+
+    const [originalData, setOriginalData] = useState(null); // Speichert ursprüngliche Daten
 
     const [checklist, setChecklist] = useState({
         vorstellung: false,
@@ -114,39 +124,42 @@ const PrivatinsolvenzFormular = () => { // Hier öffnen wir die Komponente
             [name]: checked
         }));
     };
-
     const saveFormData = async () => {
         setIsSaving(true);
         setSaveError(null);
 
-        // Falls taskId leer ist, generiere eine neue UUID
-        const generatedTaskId = formData.taskId || `task_${Date.now()}`;
+        // Prüfen, ob sich Daten geändert haben, bevor wir speichern
+        if (originalData && JSON.stringify(formData) === JSON.stringify(originalData)) {
+            console.log("ℹ️ Keine Änderungen erkannt. Speichern nicht notwendig.");
+            setIsSaving(false);
+            return;
+        }
+
+        if (!taskId) {
+            console.error("❌ Keine Task ID gefunden, Speichern abgebrochen!");
+            return;
+        }
 
         const updatedFormData = {
             ...formData,
-            taskId: generatedTaskId
+            taskId // Nutze die taskId aus useParams()
         };
 
         try {
-            console.log("📤 Speichere Formulardaten mit Task ID:", JSON.stringify(updatedFormData, null, 2));
-
-            const response = await fetch('http://localhost:5001/api/forms', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(updatedFormData)
+            console.log("📤 Sende Daten an Backend:", updatedFormData);
+            const response = await fetch(`https://privatinsolvenz-backend.onrender.com/api/forms/${taskId}`, {
+                method: formData.taskId ? 'PUT' : 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedFormData) // HIER wird `updatedFormData` gesendet!
             });
 
-            if (!response.ok) {
-                throw new Error('Fehler beim Speichern der Daten');
-            }
+            if (!response.ok) throw new Error('Fehler beim Speichern');
 
             const data = await response.json();
             console.log('✅ Daten erfolgreich gespeichert:', data);
         } catch (error) {
             console.error('❌ Fehler beim Speichern:', error);
-            setSaveError('Fehler beim Speichern der Daten');
+            setSaveError('Fehler beim Speichern');
         } finally {
             setIsSaving(false);
         }
@@ -154,8 +167,8 @@ const PrivatinsolvenzFormular = () => { // Hier öffnen wir die Komponente
     // Nach saveFormData:
     const loadFormData = async (taskId) => {
         try {
-            console.log("📥 Lade Formulardaten für Task ID:", taskId);  // Debugging
-            const response = await fetch(`http://localhost:5001/api/forms/${taskId}`);
+            console.log("📥 Lade Formulardaten für Task ID:", taskId);
+            const response = await fetch(`https://privatinsolvenz-backend.onrender.com/api/forms/${taskId}`);
 
             if (!response.ok) {
                 throw new Error('Fehler beim Laden der Daten');
@@ -163,18 +176,23 @@ const PrivatinsolvenzFormular = () => { // Hier öffnen wir die Komponente
 
             const data = await response.json();
             console.log("✅ Geladene Formulardaten:", JSON.stringify(data, null, 2));
-            setFormData(data);
+
+            setFormData({ ...data, taskId }); // Stelle sicher, dass taskId immer gesetzt ist
+            setOriginalData({ ...data, taskId }); // Speichert die Originaldaten
         } catch (error) {
             console.error('❌ Fehler beim Laden:', error);
         }
     };
 
-    // Füge useEffect hinzu:
     useEffect(() => {
-        if (formData.taskId) {
-            loadFormData(formData.taskId);
+        if (!taskId) {
+            console.error("❌ Keine Task ID in der URL gefunden!");
+            return;
         }
-    }, []);
+        if (!originalData) {
+            loadFormData(taskId);
+        }
+    }, [taskId, originalData]);
 
     return (
         <div className="w-full max-w-4xl mx-auto p-4">
