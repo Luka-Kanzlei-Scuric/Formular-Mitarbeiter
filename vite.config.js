@@ -7,9 +7,15 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 5173,  // Falls du lokal testest
+    strictPort: true
   },
   build: {
     outDir: 'dist'
   },
   base: '/',  // Stellt sicher, dass Routen korrekt funktionieren
-});
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src')
+    }
+  }
+})
