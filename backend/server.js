@@ -12,10 +12,9 @@ const app = express();
 
 //Middleware
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'https://formular-mitarbeiter.onrender.com',
+    origin: ['https://formular-mitarbeiter.onrender.com', 'http://localhost:3000'],
     credentials: true
 }));
-
 
 // Connect to MongoDB
 connectDB();
