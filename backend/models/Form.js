@@ -5,12 +5,46 @@ const formSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
-        index: true // Verbessert die Suchperformance
+        index: true
     },
     leadName: {
         type: String,
         required: true
-    }
+    },
+    // Füge hier alle anderen Felder hinzu:
+    familienstand: String,
+    strasse: String,
+    hausnummer: String,
+    wohnort: String,
+    plz: String,
+    kinderAnzahl: String,
+    kinderAlter: String,
+    unterhaltspflicht: String,
+    unterhaltHoehe: String,
+    beschaeftigungsArt: String,
+    befristet: Boolean,
+    selbststaendig: Boolean,
+    rechtsform: String,
+    nettoEinkommen: String,
+    zusatzEinkommen: String,
+    immobilien: Boolean,
+    immobilienDetails: String,
+    bankguthaben: String,
+    fahrzeuge: Boolean,
+    fahrzeugWert: String,
+    lebensversicherung: Boolean,
+    versicherungWert: String,
+    sonstigeVermoegen: String,
+    gesamtSchulden: String,
+    glaeubiger: String,
+    forderungenOeffentlich: String,
+    forderungenPrivat: String,
+    vorherigeInsolvenz: Boolean,
+    insolvenzDatum: String,
+    aktuelePfaendung: Boolean,
+    pfaendungDetails: String,
+    ratenzahlungMonate: String,
+    benutzerdefinierteMonate: String
 }, {
     timestamps: true
 });
