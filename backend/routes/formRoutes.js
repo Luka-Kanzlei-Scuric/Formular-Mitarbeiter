@@ -1,5 +1,5 @@
 const express = require('express');
-const { body } = require('express-validator'); // Import für die Validierung
+const { body } = require('express-validator');
 const router = express.Router();
 const formController = require('../controllers/formController');
 
@@ -29,7 +29,6 @@ router.get('/:taskId', async (req, res) => {
     }
 });
 
-// **Hier ist die neue POST-Route mit express-validator**
 router.post(
     '/',
     [

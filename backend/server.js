@@ -13,16 +13,14 @@ const app = express();
 //Middleware
 app.use(cors({
     origin: [
-        'https://formular-mitarbeiter.vercel.app',  // Deine neue Vercel URL
-        'http://localhost:3000'  // Für lokale Entwicklung
+        'https://formular-mitarbeiter.vercel.app',
+        'http://localhost:3000'
     ],
     credentials: true
 }));
 
 // Connect to MongoDB
 connectDB();
-
-
 
 // Body Parser Middleware
 app.use(bodyParser.json());
@@ -35,7 +33,6 @@ app.get('/', (req, res) => {
 
 // Routes
 app.use('/api/forms', require('./routes/formRoutes'));
-
 
 // Error Handler
 app.use((err, req, res, next) => {
