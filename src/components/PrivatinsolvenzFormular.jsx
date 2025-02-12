@@ -1,22 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from './ui/card';  // Pfad angepasst
-import { Alert, AlertDescription } from './ui/alert';  // Pfad angepasst
+import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
+import { Alert, AlertDescription } from './ui/alert';
 import { AlertTriangle } from 'lucide-react';
-import { useParams } from 'react-router-dom'; // NEU: useParams für taskId aus URL
+import { useParams } from 'react-router-dom';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://privatinsolvenz-backend.onrender.com';
 
 const PrivatinsolvenzFormular = () => {
     const { taskId } = useParams();
-    console.log("🔍 useParams Task ID:", taskId); // Debugging
-
-    if (!taskId) {
-        return <h2 className="text-red-500 text-center">Fehler: Keine Task ID gefunden!</h2>;
-    }
+    console.log("🔍 TaskId aus URL:", taskId);
 
     const [formData, setFormData] = useState({
-
-        taskId: '',        // Neue Eigenschaft
+        taskId: '',
         leadName: '',
         familienstand: '',
         strasse: '',
@@ -27,16 +22,12 @@ const PrivatinsolvenzFormular = () => {
         kinderAlter: '',
         unterhaltspflicht: '',
         unterhaltHoehe: '',
-
-        // Berufliche Situation
         beschaeftigungsArt: '',
         befristet: false,
         selbststaendig: false,
         rechtsform: '',
         nettoEinkommen: '',
         zusatzEinkommen: '',
-
-        // Vermögenswerte
         immobilien: false,
         immobilienDetails: '',
         bankguthaben: '',
@@ -45,8 +36,6 @@ const PrivatinsolvenzFormular = () => {
         lebensversicherung: false,
         versicherungWert: '',
         sonstigeVermoegen: '',
-
-        // Schuldensituation
         gesamtSchulden: '',
         glaeubiger: '',
         forderungenOeffentlich: '',
@@ -55,14 +44,11 @@ const PrivatinsolvenzFormular = () => {
         insolvenzDatum: '',
         aktuelePfaendung: false,
         pfaendungDetails: '',
-
-        // Ratenzahlung
         ratenzahlungMonate: '2',
         benutzerdefinierteMonate: ''
     });
 
-    const [originalData, setOriginalData] = useState(null); // Speichert ursprüngliche Daten
-
+    const [originalData, setOriginalData] = useState(null);
     const [checklist, setChecklist] = useState({
         vorstellung: false,
         leadAbgleich: false,
@@ -70,10 +56,38 @@ const PrivatinsolvenzFormular = () => {
         zeitVerfuegbar: false,
         einleitung: false
     });
-
     const [isSaving, setIsSaving] = useState(false);
     const [saveError, setSaveError] = useState(null);
 
+    const loadFormData = async (taskId) => {
+        try {
+            console.log("📥 Lade Formulardaten für Task ID:", taskId);
+            console.log("🔗 Backend URL:", BACKEND_URL);
+
+            const response = await fetch(`${BACKEND_URL}/api/forms/${taskId}`);
+            console.log("📡 API Response Status:", response.status);
+
+            if (!response.ok) {
+                console.error("❌ Server Antwort nicht OK:", response.status);
+                throw new Error('Fehler beim Laden der Daten');
+            }
+
+            const data = await response.json();
+            console.log("✅ Geladene Formulardaten:", data);
+
+            setFormData({ ...formData, ...data, taskId });
+            setOriginalData({ ...data, taskId });
+        } catch (error) {
+            console.error('❌ Fehler beim Laden:', error);
+            console.error("❌ Fehler Details:", error.message);
+        }
+    };
+
+    useEffect(() => {
+        if (taskId && !originalData) {
+            loadFormData(taskId);
+        }
+    }, [taskId, originalData]);
 
     // Preisberechnung
     const calculatePrice = () => {
@@ -152,38 +166,7 @@ const PrivatinsolvenzFormular = () => {
     };
 
     // Nach saveFormData:
-    const loadFormData = async (taskId) => {
-        try {
-            console.log("📥 Lade Formulardaten für Task ID:", taskId);
-            console.log("🔗 Backend URL:", BACKEND_URL); // Debug-Log
 
-            const response = await fetch(`${BACKEND_URL}/api/forms/${taskId}`);
-
-            if (!response.ok) {
-                console.error("❌ Server Antwort nicht OK:", response.status);
-                throw new Error('Fehler beim Laden der Daten');
-            }
-
-            const data = await response.json();
-            console.log("✅ Geladene Formulardaten:", data);
-
-            setFormData({ ...data, taskId });
-            setOriginalData({ ...data, taskId });
-        } catch (error) {
-            console.error('❌ Fehler beim Laden:', error);
-        }
-    };
-
-
-    useEffect(() => {
-        if (!taskId) {
-            console.error("❌ Keine Task ID in der URL gefunden!");
-            return;
-        }
-        if (!originalData) {
-            loadFormData(taskId);
-        }
-    }, [taskId, originalData]);
 
     return (
         <div className="w-full max-w-4xl mx-auto p-4">
