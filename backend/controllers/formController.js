@@ -80,11 +80,10 @@ exports.createForm = async (req, res) => {
 };
 
 // Update Form
-const updateForm = async (req, res) => {
+exports.updateForm = async (req, res) => {
     try {
         console.log(`🔄 Update-Request für TaskId ${req.params.taskId}`);
 
-        // Erst in MongoDB updaten
         const updatedForm = await Form.findOneAndUpdate(
             { taskId: req.params.taskId },
             req.body,
@@ -96,28 +95,27 @@ const updateForm = async (req, res) => {
             return res.status(404).json({ message: 'Formular nicht gefunden' });
         }
 
-        // Dann ClickUp aktualisieren
+        // Optional: ClickUp Update, wenn benötigt
         try {
             const clickUpTaskId = req.params.taskId;
             const clickUpAPIKey = process.env.CLICKUP_API_KEY;
-            const clickUpFormFieldId = process.env.CLICKUP_FORM_LINK_FIELD_ID; // Diese muss in .env gesetzt sein
 
-            await axios.put(
-                `https://api.clickup.com/api/v2/task/${clickUpTaskId}/custom_field/${clickUpFormFieldId}`,
-                {
-                    value: "Formular ausgefüllt"
-                },
-                {
-                    headers: {
-                        'Authorization': clickUpAPIKey,
-                        'Content-Type': 'application/json'
+            if (clickUpAPIKey) {
+                await axios.put(
+                    `https://api.clickup.com/api/v2/task/${clickUpTaskId}/custom_field/${process.env.CLICKUP_FORM_LINK_FIELD_ID}`,
+                    {
+                        value: "Formular ausgefüllt"
+                    },
+                    {
+                        headers: {
+                            'Authorization': clickUpAPIKey,
+                            'Content-Type': 'application/json'
+                        }
                     }
-                }
-            );
-
-            console.log("✅ Status erfolgreich in ClickUp aktualisiert!");
+                );
+                console.log("✅ ClickUp Status aktualisiert");
+            }
         } catch (clickUpError) {
-            // Wenn ClickUp-Update fehlschlägt, loggen wir es, aber lassen die Funktion weiterlaufen
             console.error("⚠️ ClickUp Update fehlgeschlagen:", clickUpError.message);
         }
 

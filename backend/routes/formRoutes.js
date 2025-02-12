@@ -50,7 +50,7 @@ router.put('/:taskId', async (req, res) => {
     try {
         await formController.updateForm(req, res);
     } catch (error) {
-        console.error("❌ Fehler bei PUT /:taskId:", error.message);
+        console.error("❌ Fehler bei PUT /:taskId:", error);
         res.status(500).json({ error: "Interner Serverfehler" });
     }
 });
