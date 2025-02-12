@@ -80,26 +80,14 @@ exports.createForm = async (req, res) => {
 };
 
 // Update Form
-exports.updateForm = async (req, res) => {
+const updateForm = async (req, res) => {
     try {
         console.log(`🔄 Update-Request für TaskId ${req.params.taskId}`);
 
-        const allowedUpdates = ['leadName', 'email', 'telefonnummer']; // Erlaubte Felder
-        const updateData = {};
-
-        for (let key of Object.keys(req.body)) {
-            if (allowedUpdates.includes(key)) {
-                updateData[key] = req.body[key];
-            }
-        }
-
-        if (Object.keys(updateData).length === 0) {
-            return res.status(400).json({ message: 'Keine gültigen Felder zum Aktualisieren angegeben' });
-        }
-
+        // Erst in MongoDB updaten
         const updatedForm = await Form.findOneAndUpdate(
             { taskId: req.params.taskId },
-            updateData,
+            req.body,
             { new: true, runValidators: true }
         );
 
@@ -108,22 +96,34 @@ exports.updateForm = async (req, res) => {
             return res.status(404).json({ message: 'Formular nicht gefunden' });
         }
 
+        // Dann ClickUp aktualisieren
+        try {
+            const clickUpTaskId = req.params.taskId;
+            const clickUpAPIKey = process.env.CLICKUP_API_KEY;
+            const clickUpFormFieldId = process.env.CLICKUP_FORM_LINK_FIELD_ID; // Diese muss in .env gesetzt sein
+
+            await axios.put(
+                `https://api.clickup.com/api/v2/task/${clickUpTaskId}/custom_field/${clickUpFormFieldId}`,
+                {
+                    value: "Formular ausgefüllt"
+                },
+                {
+                    headers: {
+                        'Authorization': clickUpAPIKey,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            console.log("✅ Status erfolgreich in ClickUp aktualisiert!");
+        } catch (clickUpError) {
+            // Wenn ClickUp-Update fehlschlägt, loggen wir es, aber lassen die Funktion weiterlaufen
+            console.error("⚠️ ClickUp Update fehlgeschlagen:", clickUpError.message);
+        }
+
         console.log("✅ Formular erfolgreich aktualisiert:", updatedForm);
-
-        // Bestätigung in ClickUp setzen
-        const clickUpTaskId = req.params.taskId;
-        const clickUpAPIKey = process.env.CLICKUP_API_KEY;
-        const clickUpFieldId = "status_field_id"; // ID des Status-Feldes in ClickUp
-
-        await axios.put(
-            `https://api.clickup.com/api/v2/task/${clickUpTaskId}/field/${clickUpFieldId}`,
-            { value: "Formular ausgefüllt" },
-            { headers: { Authorization: clickUpAPIKey } }
-        );
-
-        console.log("✅ Status erfolgreich in ClickUp aktualisiert!");
-
         res.json(updatedForm);
+
     } catch (error) {
         console.error("❌ Fehler beim Aktualisieren des Formulars:", error);
         res.status(500).json({ message: "Interner Serverfehler" });
