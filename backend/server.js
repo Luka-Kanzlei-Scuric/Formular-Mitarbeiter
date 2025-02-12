@@ -12,7 +12,10 @@ const app = express();
 
 //Middleware
 app.use(cors({
-    origin: ['https://formular-mitarbeiter.onrender.com', 'http://localhost:3000'],
+    origin: [
+        'https://formular-mitarbeiter.vercel.app',  // Deine neue Vercel URL
+        'http://localhost:3000'  // Für lokale Entwicklung
+    ],
     credentials: true
 }));
 
