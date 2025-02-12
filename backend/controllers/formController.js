@@ -95,6 +95,39 @@ exports.updateForm = async (req, res) => {
             return res.status(404).json({ message: 'Formular nicht gefunden' });
         }
 
+        // Berechne Preise für make.com
+        const startgebuehr = 799;
+        const preisProGlaeubiger = 39;
+        const anzahlGlaeubiger = parseInt(updatedForm.glaeubiger) || 0;
+        const gesamtPreis = startgebuehr + (anzahlGlaeubiger * preisProGlaeubiger);
+
+        // Berechne Raten
+        let monate = updatedForm.ratenzahlungMonate === 'custom'
+            ? Math.min(Math.max(parseInt(updatedForm.benutzerdefinierteMonate) || 1, 1), 12)
+            : parseInt(updatedForm.ratenzahlungMonate) || 2;
+        const monatsRate = gesamtPreis / monate;
+
+        // Sende Daten an make.com
+        try {
+            const makeWebhookUrl = 'https://hook.eu2.make.com/wm49imwg7p08738f392n8pu2hgwwzpac';
+            await axios.post(makeWebhookUrl, {
+                ...updatedForm.toObject(),
+                preisKalkulation: {
+                    startgebuehr,
+                    preisProGlaeubiger,
+                    anzahlGlaeubiger,
+                    gesamtPreis,
+                    ratenzahlung: {
+                        monate,
+                        monatsRate
+                    }
+                }
+            });
+            console.log("✅ Daten an make.com gesendet");
+        } catch (makeError) {
+            console.error("⚠️ Make.com Update fehlgeschlagen:", makeError.message);
+        }
+
         // Optional: ClickUp Update, wenn benötigt
         try {
             const clickUpTaskId = req.params.taskId;
