@@ -62,29 +62,42 @@ const PrivatinsolvenzFormular = () => {
     const loadFormData = async (taskId) => {
         try {
             console.log("📥 Lade Formulardaten für Task ID:", taskId);
-            console.log("🔗 Backend URL:", BACKEND_URL);
+            const apiUrl = `${BACKEND_URL}/api/forms/${taskId}`;
+            console.log("🔗 Versuche API-Aufruf:", apiUrl);
 
-            const response = await fetch(`${BACKEND_URL}/api/forms/${taskId}`);
+            const response = await fetch(apiUrl, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                credentials: 'include'
+            });
+
             console.log("📡 API Response Status:", response.status);
 
             if (!response.ok) {
-                console.error("❌ Server Antwort nicht OK:", response.status);
-                throw new Error('Fehler beim Laden der Daten');
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
 
             const data = await response.json();
             console.log("✅ Geladene Formulardaten:", data);
 
-            setFormData({ ...formData, ...data, taskId });
+            setFormData(prevData => ({ ...prevData, ...data, taskId }));
             setOriginalData({ ...data, taskId });
         } catch (error) {
-            console.error('❌ Fehler beim Laden:', error);
+            console.error("❌ Fehler beim Laden:", error);
             console.error("❌ Fehler Details:", error.message);
         }
     };
 
     useEffect(() => {
+        console.log("🔄 useEffect ausgelöst");
+        console.log("📝 taskId:", taskId);
+        console.log("📝 originalData:", originalData);
+
         if (taskId && !originalData) {
+            console.log("🚀 Starte loadFormData");
             loadFormData(taskId);
         }
     }, [taskId, originalData]);
