@@ -97,7 +97,12 @@ exports.updateForm = async (req, res) => {
                         monate,
                         monatsRate
                     }
-                }
+                },
+                zustellung: {
+                    perPost: updatedForm.zustellungPost,
+                    perEmail: updatedForm.zustellungEmail
+                },
+                qualifizierungsStatus: updatedForm.qualifiziert
             });
             console.log("✅ Daten an make.com gesendet");
         } catch (makeError) {

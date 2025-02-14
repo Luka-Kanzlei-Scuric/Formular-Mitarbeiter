@@ -11,6 +11,18 @@ const formSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    zustellungPost: {
+        type: Boolean,
+        default: false
+    },
+    zustellungEmail: {
+        type: Boolean,
+        default: false
+    },
+    qualifiziert: {
+        type: Boolean,
+        default: false
+    },
     // Füge hier alle anderen Felder hinzu:
     familienstand: String,
     strasse: String,

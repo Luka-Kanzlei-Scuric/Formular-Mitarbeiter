@@ -166,20 +166,28 @@ const PrivatinsolvenzFormular = () => {
         setSaveError(null);
 
         try {
-            console.log("📤 Sende Daten an Backend:", formData);
+            const updatedData = {
+                ...formData,
+                qualifiziert: true // Setze qualifiziert auf true beim Speichern
+            };
+
+            console.log("📤 Sende Daten an Backend:", updatedData);
             const response = await fetch(`${BACKEND_URL}/api/forms/${taskId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(updatedData)
             });
 
             if (!response.ok) throw new Error('Fehler beim Speichern');
 
             const data = await response.json();
             console.log('✅ Daten erfolgreich gespeichert:', data);
+
+            // Update lokalen State
+            setFormData(updatedData);
         } catch (error) {
             console.error('❌ Fehler beim Speichern:', error);
             setSaveError('Fehler beim Speichern');
@@ -573,15 +581,61 @@ const PrivatinsolvenzFormular = () => {
                             </div>
                         </CardContent>
                     </Card>
+                    {/* Zustellungsart */}
+                    <Card className="mb-6 bg-white shadow-lg hover:shadow-xl transition-shadow">
+                        <CardHeader>
+                            <CardTitle>8. Zustellungsart des Angebots</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex space-x-8 justify-center">
+                                <label className="flex items-center space-x-2 cursor-pointer">
+                                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
+                                        ${formData.zustellungPost ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
+                                        onClick={() => setFormData(prev => ({
+                                            ...prev,
+                                            zustellungPost: !prev.zustellungPost
+                                        }))}
+                                    >
+                                        {formData.zustellungPost && (
+                                            <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                            </svg>
+                                        )}
+                                    </div>
+                                    <span>Per Post</span>
+                                </label>
+
+                                <label className="flex items-center space-x-2 cursor-pointer">
+                                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
+                                        ${formData.zustellungEmail ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
+                                        onClick={() => setFormData(prev => ({
+                                            ...prev,
+                                            zustellungEmail: !prev.zustellungEmail
+                                        }))}
+                                    >
+                                        {formData.zustellungEmail && (
+                                            <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                            </svg>
+                                        )}
+                                    </div>
+                                    <span>Per E-Mail</span>
+                                </label>
+                            </div>
+                        </CardContent>
+                    </Card>
+
                     {/* Qualifiziert Button */}
                     <div className="flex justify-center mt-6 mb-8">
                         <button
-                            className={`px-6 py-3 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition-colors ${isSaving ? 'opacity-50 cursor-not-allowed' : ''
-                                }`}
+                            className={`px-6 py-3 ${formData.qualifiziert
+                                ? 'bg-gray-500 cursor-not-allowed'
+                                : 'bg-green-500 hover:bg-green-600'} 
+                                text-white font-semibold rounded-lg transition-colors ${isSaving ? 'opacity-50' : ''}`}
                             onClick={saveFormData}
-                            disabled={isSaving}
+                            disabled={isSaving || formData.qualifiziert}
                         >
-                            {isSaving ? 'Wird gespeichert...' : 'Qualifiziert'}
+                            {isSaving ? 'Wird gespeichert...' : formData.qualifiziert ? 'Bereits qualifiziert' : 'Qualifiziert'}
                         </button>
                     </div>
 
