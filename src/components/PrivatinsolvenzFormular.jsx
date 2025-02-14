@@ -589,35 +589,39 @@ const PrivatinsolvenzFormular = () => {
                         <CardContent>
                             <div className="flex space-x-8 justify-center">
                                 <label className="flex items-center space-x-2 cursor-pointer">
-                                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
-                                        ${formData.zustellungPost ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
-                                        onClick={() => setFormData(prev => ({
-                                            ...prev,
-                                            zustellungPost: !prev.zustellungPost
-                                        }))}
-                                    >
-                                        {formData.zustellungPost && (
-                                            <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                            </svg>
-                                        )}
+                                    <div className="p-3"> {/* Padding auf p-3 erhöht für größeren Klickbereich */}
+                                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
+                        ${formData.zustellungPost ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
+                                            onClick={() => setFormData(prev => ({
+                                                ...prev,
+                                                zustellungPost: !prev.zustellungPost
+                                            }))}
+                                        >
+                                            {formData.zustellungPost && (
+                                                <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            )}
+                                        </div>
                                     </div>
                                     <span>Per Post</span>
                                 </label>
 
                                 <label className="flex items-center space-x-2 cursor-pointer">
-                                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
-                                        ${formData.zustellungEmail ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
-                                        onClick={() => setFormData(prev => ({
-                                            ...prev,
-                                            zustellungEmail: !prev.zustellungEmail
-                                        }))}
-                                    >
-                                        {formData.zustellungEmail && (
-                                            <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                            </svg>
-                                        )}
+                                    <div className="p-3"> {/* Padding auf p-3 erhöht für größeren Klickbereich */}
+                                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
+                        ${formData.zustellungEmail ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
+                                            onClick={() => setFormData(prev => ({
+                                                ...prev,
+                                                zustellungEmail: !prev.zustellungEmail
+                                            }))}
+                                        >
+                                            {formData.zustellungEmail && (
+                                                <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            )}
+                                        </div>
                                     </div>
                                     <span>Per E-Mail</span>
                                 </label>
