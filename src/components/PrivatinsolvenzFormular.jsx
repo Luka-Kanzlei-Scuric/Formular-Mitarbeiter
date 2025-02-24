@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Alert, AlertDescription } from './ui/alert';
 import { AlertTriangle } from 'lucide-react';
 import { useParams } from 'react-router-dom';
+import { getPfaendungsbetrag } from '../lib/pfaendungsberechnung';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://privatinsolvenz-backend.onrender.com';
 
@@ -114,15 +115,27 @@ const PrivatinsolvenzFormular = () => {
     }, [taskId]);
 
     const calculatePrice = () => {
-        const startgebuehr = 799;
-        const preisProGlaeubiger = 39;
+        const nettoEinkommen = parseFloat(formData.nettoEinkommen) || 0;
+        const kinderAnzahl = parseInt(formData.kinderAnzahl) || 0;
         const anzahlGlaeubiger = parseInt(formData.glaeubiger) || 0;
 
-        const gesamtPreis = startgebuehr + (anzahlGlaeubiger * preisProGlaeubiger);
+        // Basis-Preis Berechnung
+        const startgebuehr = 799;
+        const preisProGlaeubiger = 39;
+        const basisPreis = startgebuehr + (anzahlGlaeubiger * preisProGlaeubiger);
+
+        // Pfändungspreis Berechnung
+        const pfaendungsPreis = getPfaendungsbetrag(nettoEinkommen, kinderAnzahl);
+
+        // Ermittle den höheren Preis
+        const gesamtPreis = Math.max(basisPreis, pfaendungsPreis || 0);
+
         return {
             startgebuehr,
             glaeubigerKosten: anzahlGlaeubiger * preisProGlaeubiger,
-            gesamtPreis
+            pfaendungsPreis: pfaendungsPreis || 0,
+            gesamtPreis,
+            berechnungsArt: pfaendungsPreis > basisPreis ? 'Pfändungsberechnung' : 'Standardberechnung'
         };
     };
 
@@ -514,14 +527,36 @@ const PrivatinsolvenzFormular = () => {
                                 <div className="bg-gray-50 p-4 rounded-lg">
                                     <h3 className="font-medium mb-3">Kostenaufstellung</h3>
                                     <div className="grid grid-cols-2 gap-2">
+                                        {/* Standardberechnung */}
+                                        <div className="col-span-2 mt-2 mb-2 pt-2 border-t border-gray-200">
+                                            <div className="font-semibold">Standardberechnung:</div>
+                                        </div>
                                         <div>Startgebühr Insolvenz:</div>
                                         <div className="text-right">{calculatePrice().startgebuehr.toFixed(2)} €</div>
-
                                         <div>Kosten für {formData.glaeubiger || 0} Gläubiger:</div>
                                         <div className="text-right">{calculatePrice().glaeubigerKosten.toFixed(2)} €</div>
+                                        <div className="font-medium">Standardpreis:</div>
+                                        <div className="text-right font-medium">{(calculatePrice().startgebuehr + calculatePrice().glaeubigerKosten).toFixed(2)} €</div>
 
-                                        <div className="font-medium pt-2 border-t">Gesamtpreis (Brutto):</div>
-                                        <div className="text-right font-bold pt-2 border-t">{calculatePrice().gesamtPreis.toFixed(2)} €</div>
+                                        {/* Pfändungsberechnung */}
+                                        <div className="col-span-2 mt-4 mb-2 pt-2 border-t border-gray-200">
+                                            <div className="font-semibold">Pfändungsberechnung:</div>
+                                        </div>
+                                        <div>Monatlich pfändbar:</div>
+                                        <div className="text-right">{(calculatePrice().pfaendungsPreis / 3).toFixed(2)} €</div>
+                                        <div>Pfändbar für 3 Monate:</div>
+                                        <div className="text-right">{calculatePrice().pfaendungsPreis.toFixed(2)} €</div>
+
+                                        {/* Gesamtpreis */}
+                                        <div className="col-span-2 mt-4 pt-2 border-t border-gray-200">
+                                            <div className="flex justify-between items-center">
+                                                <div className="font-bold">Gesamtpreis (der höhere Betrag):</div>
+                                                <div className="text-right font-bold text-lg">{calculatePrice().gesamtPreis.toFixed(2)} €</div>
+                                            </div>
+                                            <div className="text-sm text-gray-600 mt-2">
+                                                Berechnung basierend auf: {calculatePrice().berechnungsArt}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
