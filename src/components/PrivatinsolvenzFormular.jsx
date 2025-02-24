@@ -60,7 +60,10 @@ const PrivatinsolvenzFormular = () => {
         aktuelePfaendung: false,
         pfaendungDetails: '',
         ratenzahlungMonate: '2',
-        benutzerdefinierteMonate: ''
+        benutzerdefinierteMonate: '',
+        bearbeitungStart: '1', // Standardwert: 1. des Monats
+        abrechnungStart: '1',   // Standardwert: 1. des Monats
+        notizen: ''
     });
 
     const [checklist, setChecklist] = useState({
@@ -660,6 +663,121 @@ const PrivatinsolvenzFormular = () => {
                                     </div>
                                     <span>Per E-Mail</span>
                                 </label>
+                            </div>
+                        </CardContent>
+                    </Card>
+                    {/* Startdatum für Bearbeitung/Abrechnung */}
+                    <Card className="mb-6 bg-white shadow-lg hover:shadow-xl transition-shadow">
+                        <CardHeader>
+                            <CardTitle>9. Startdatum für Bearbeitung und Abrechnung</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="space-y-6">
+                                {/* Bearbeitungsstart */}
+                                <div>
+                                    <h3 className="font-medium mb-3">Bearbeitung starten:</h3>
+                                    <div className="flex items-center gap-8">
+                                        <label className="flex items-center space-x-2 cursor-pointer">
+                                            <div className="p-3">
+                                                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
+                                ${formData.bearbeitungStart === '1' ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
+                                                    onClick={() => setFormData(prev => ({
+                                                        ...prev,
+                                                        bearbeitungStart: '1'
+                                                    }))}
+                                                >
+                                                    {formData.bearbeitungStart === '1' && (
+                                                        <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <span>zum 1. des Monats</span>
+                                        </label>
+
+                                        <label className="flex items-center space-x-2 cursor-pointer">
+                                            <div className="p-3">
+                                                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
+                                ${formData.bearbeitungStart === '15' ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
+                                                    onClick={() => setFormData(prev => ({
+                                                        ...prev,
+                                                        bearbeitungStart: '15'
+                                                    }))}
+                                                >
+                                                    {formData.bearbeitungStart === '15' && (
+                                                        <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <span>zum 15. des Monats</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                {/* Abrechnungsstart */}
+                                <div>
+                                    <h3 className="font-medium mb-3">Abrechnung starten:</h3>
+                                    <div className="flex items-center gap-8">
+                                        <label className="flex items-center space-x-2 cursor-pointer">
+                                            <div className="p-3">
+                                                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
+                                ${formData.abrechnungStart === '1' ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
+                                                    onClick={() => setFormData(prev => ({
+                                                        ...prev,
+                                                        abrechnungStart: '1'
+                                                    }))}
+                                                >
+                                                    {formData.abrechnungStart === '1' && (
+                                                        <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <span>zum 1. des Monats</span>
+                                        </label>
+
+                                        <label className="flex items-center space-x-2 cursor-pointer">
+                                            <div className="p-3">
+                                                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
+                                ${formData.abrechnungStart === '15' ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
+                                                    onClick={() => setFormData(prev => ({
+                                                        ...prev,
+                                                        abrechnungStart: '15'
+                                                    }))}
+                                                >
+                                                    {formData.abrechnungStart === '15' && (
+                                                        <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <span>zum 15. des Monats</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                    {/* Notizfeld */}
+                    <Card className="mb-6 bg-white shadow-lg hover:shadow-xl transition-shadow">
+                        <CardHeader>
+                            <CardTitle>10. Notizen</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div>
+                                <label className="block mb-2">Interne Notizen</label>
+                                <textarea
+                                    name="notizen"
+                                    value={formData.notizen || ""}
+                                    onChange={handleInputChange}
+                                    placeholder="Hier können Sie wichtige Informationen oder Hinweise notieren..."
+                                    className="w-full p-3 border-[1px] rounded focus:outline-none focus:border-gray-400 min-h-[120px]"
+                                />
                             </div>
                         </CardContent>
                     </Card>

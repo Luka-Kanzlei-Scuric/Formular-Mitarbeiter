@@ -56,7 +56,16 @@ const formSchema = new mongoose.Schema({
     aktuelePfaendung: Boolean,
     pfaendungDetails: String,
     ratenzahlungMonate: String,
-    benutzerdefinierteMonate: String
+    benutzerdefinierteMonate: String,
+    bearbeitungStart: {
+        type: String,
+        default: '1'
+    },
+    abrechnungStart: {
+        type: String,
+        default: '1'
+    },
+    notizen: String // Neues Notizfeld
 }, {
     timestamps: true
 });
