@@ -61,9 +61,33 @@ const formSchema = new mongoose.Schema({
         type: String,
         default: '1'
     },
+    bearbeitungStart: {
+        type: String,
+        default: '1'
+    },
+    bearbeitungMonat: {
+        type: String,
+        default: ''
+    },
     abrechnungStart: {
         type: String,
         default: '1'
+    },
+    abrechnungMonat: {
+        type: String,
+        default: ''
+    },
+    manuellerPreis: {
+        type: Boolean,
+        default: false
+    },
+    manuellerPreisBetrag: {
+        type: String,
+        default: ''
+    },
+    manuellerPreisNotiz: {
+        type: String,
+        default: ''
     },
     notizen: String // Neues Notizfeld
 }, {

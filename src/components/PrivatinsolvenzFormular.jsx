@@ -526,44 +526,117 @@ const PrivatinsolvenzFormular = () => {
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-6">
-                                {/* Preisübersicht */}
-                                <div className="bg-gray-50 p-4 rounded-lg">
-                                    <h3 className="font-medium mb-3">Kostenaufstellung</h3>
-                                    <div className="grid grid-cols-2 gap-2">
-                                        {/* Standardberechnung */}
-                                        <div className="col-span-2 mt-2 mb-2 pt-2 border-t border-gray-200">
-                                            <div className="font-semibold">Standardberechnung:</div>
-                                        </div>
-                                        <div>Startgebühr Insolvenz:</div>
-                                        <div className="text-right">{calculatePrice().startgebuehr.toFixed(2)} €</div>
-                                        <div>Kosten für {formData.glaeubiger || 0} Gläubiger:</div>
-                                        <div className="text-right">{calculatePrice().glaeubigerKosten.toFixed(2)} €</div>
-                                        <div className="font-medium">Standardpreis:</div>
-                                        <div className="text-right font-medium">{(calculatePrice().startgebuehr + calculatePrice().glaeubigerKosten).toFixed(2)} €</div>
-
-                                        {/* Pfändungsberechnung */}
-                                        <div className="col-span-2 mt-4 mb-2 pt-2 border-t border-gray-200">
-                                            <div className="font-semibold">Pfändungsberechnung:</div>
-                                        </div>
-                                        <div>Monatlich pfändbar:</div>
-                                        <div className="text-right">{(calculatePrice().pfaendungsPreis / 3).toFixed(2)} €</div>
-                                        <div>Pfändbar für 3 Monate:</div>
-                                        <div className="text-right">{calculatePrice().pfaendungsPreis.toFixed(2)} €</div>
-
-                                        {/* Gesamtpreis */}
-                                        <div className="col-span-2 mt-4 pt-2 border-t border-gray-200">
-                                            <div className="flex justify-between items-center">
-                                                <div className="font-bold">Gesamtpreis (der höhere Betrag):</div>
-                                                <div className="text-right font-bold text-lg">{calculatePrice().gesamtPreis.toFixed(2)} €</div>
+                                {/* Preisberechnungsmodus Auswahl */}
+                                <div className="mb-4">
+                                    <h3 className="font-medium mb-3">Berechnungsmodus</h3>
+                                    <div className="flex space-x-4">
+                                        <label className="flex items-center space-x-2 cursor-pointer">
+                                            <div className="p-2">
+                                                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
+                            ${!formData.manuellerPreis ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
+                                                    onClick={() => setFormData(prev => ({
+                                                        ...prev,
+                                                        manuellerPreis: false
+                                                    }))}
+                                                >
+                                                    {!formData.manuellerPreis && (
+                                                        <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                    )}
+                                                </div>
                                             </div>
-                                            <div className="text-sm text-gray-600 mt-2">
-                                                Berechnung basierend auf: {calculatePrice().berechnungsArt}
+                                            <span>Automatische Berechnung</span>
+                                        </label>
+
+                                        <label className="flex items-center space-x-2 cursor-pointer">
+                                            <div className="p-2">
+                                                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
+                            ${formData.manuellerPreis ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
+                                                    onClick={() => setFormData(prev => ({
+                                                        ...prev,
+                                                        manuellerPreis: true
+                                                    }))}
+                                                >
+                                                    {formData.manuellerPreis && (
+                                                        <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                    )}
+                                                </div>
                                             </div>
-                                        </div>
+                                            <span>Manueller Preis</span>
+                                        </label>
                                     </div>
                                 </div>
 
-                                {/* Ratenzahlungsrechner */}
+                                {/* Preisübersicht - nur zeigen, wenn nicht manueller Modus */}
+                                {!formData.manuellerPreis ? (
+                                    <div className="bg-gray-50 p-4 rounded-lg">
+                                        <h3 className="font-medium mb-3">Kostenaufstellung</h3>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            {/* Standardberechnung */}
+                                            <div className="col-span-2 mt-2 mb-2 pt-2 border-t border-gray-200">
+                                                <div className="font-semibold">Standardberechnung:</div>
+                                            </div>
+                                            <div>Startgebühr Insolvenz:</div>
+                                            <div className="text-right">{calculatePrice().startgebuehr.toFixed(2)} €</div>
+                                            <div>Kosten für {formData.glaeubiger || 0} Gläubiger:</div>
+                                            <div className="text-right">{calculatePrice().glaeubigerKosten.toFixed(2)} €</div>
+                                            <div className="font-medium">Standardpreis:</div>
+                                            <div className="text-right font-medium">{(calculatePrice().startgebuehr + calculatePrice().glaeubigerKosten).toFixed(2)} €</div>
+
+                                            {/* Pfändungsberechnung */}
+                                            <div className="col-span-2 mt-4 mb-2 pt-2 border-t border-gray-200">
+                                                <div className="font-semibold">Pfändungsberechnung:</div>
+                                            </div>
+                                            <div>Monatlich pfändbar:</div>
+                                            <div className="text-right">{(calculatePrice().pfaendungsPreis / 3).toFixed(2)} €</div>
+                                            <div>Pfändbar für 3 Monate:</div>
+                                            <div className="text-right">{calculatePrice().pfaendungsPreis.toFixed(2)} €</div>
+
+                                            {/* Gesamtpreis */}
+                                            <div className="col-span-2 mt-4 pt-2 border-t border-gray-200">
+                                                <div className="flex justify-between items-center">
+                                                    <div className="font-bold">Gesamtpreis (der höhere Betrag):</div>
+                                                    <div className="text-right font-bold text-lg">{calculatePrice().gesamtPreis.toFixed(2)} €</div>
+                                                </div>
+                                                <div className="text-sm text-gray-600 mt-2">
+                                                    Berechnung basierend auf: {calculatePrice().berechnungsArt}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="bg-gray-50 p-4 rounded-lg">
+                                        <h3 className="font-medium mb-3">Manueller Preis</h3>
+                                        <div className="space-y-4">
+                                            <div>
+                                                <label className="block mb-2">Gesamtpreis (€)</label>
+                                                <input
+                                                    type="number"
+                                                    name="manuellerPreisBetrag"
+                                                    value={formData.manuellerPreisBetrag || ''}
+                                                    onChange={handleInputChange}
+                                                    placeholder="Betrag eingeben"
+                                                    className="w-full p-2 border-[1px] rounded focus:outline-none focus:border-gray-400"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block mb-2">Begründung / Notiz</label>
+                                                <textarea
+                                                    name="manuellerPreisNotiz"
+                                                    value={formData.manuellerPreisNotiz || ''}
+                                                    onChange={handleInputChange}
+                                                    placeholder="Grund für manuellen Preis eingeben"
+                                                    className="w-full p-2 border-[1px] rounded focus:outline-none focus:border-gray-400 min-h-[80px]"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Ratenzahlungsrechner - funktioniert mit beiden Preisberechnungsmethoden */}
                                 <div className="bg-blue-50 p-4 rounded-lg">
                                     <h3 className="font-medium mb-3">Ratenzahlung</h3>
                                     <div className="space-y-4">
@@ -573,7 +646,8 @@ const PrivatinsolvenzFormular = () => {
                                                 name="ratenzahlungMonate"
                                                 value={formData.ratenzahlungMonate}
                                                 onChange={handleInputChange}
-                                                className="w-full p-2 border-[1px] rounded focus:outline-none focus:border-gray-400"                                    >
+                                                className="w-full p-2 border-[1px] rounded focus:outline-none focus:border-gray-400"
+                                            >
                                                 <option value="2">2 Monate</option>
                                                 <option value="4">4 Monate</option>
                                                 <option value="6">6 Monate</option>
@@ -591,20 +665,29 @@ const PrivatinsolvenzFormular = () => {
                                                     onChange={handleInputChange}
                                                     min="1"
                                                     max="12"
-                                                    className="w-full p-2 border-[1px] rounded focus:outline-none focus:border-gray-400" placeholder="Anzahl der Monate eingeben"
+                                                    className="w-full p-2 border-[1px] rounded focus:outline-none focus:border-gray-400"
+                                                    placeholder="Anzahl der Monate eingeben"
                                                 />
                                             </div>
                                         )}
 
                                         <div className="grid grid-cols-2 gap-2 bg-white p-3 rounded mt-4">
                                             <div>Monatliche Rate:</div>
-                                            <div className="text-right font-bold">{calculateRates().monatsRate.toFixed(2)} €</div>
+                                            <div className="text-right font-bold">
+                                                {formData.manuellerPreis
+                                                    ? ((parseFloat(formData.manuellerPreisBetrag) || 0) / (calculateRates().monate)).toFixed(2)
+                                                    : calculateRates().monatsRate.toFixed(2)} €
+                                            </div>
 
                                             <div>Laufzeit:</div>
                                             <div className="text-right">{calculateRates().monate} Monate</div>
 
                                             <div>Gesamtbetrag:</div>
-                                            <div className="text-right">{calculateRates().gesamtPreis.toFixed(2)} €</div>
+                                            <div className="text-right">
+                                                {formData.manuellerPreis
+                                                    ? (parseFloat(formData.manuellerPreisBetrag) || 0).toFixed(2)
+                                                    : calculateRates().gesamtPreis.toFixed(2)} €
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -612,13 +695,16 @@ const PrivatinsolvenzFormular = () => {
                                 <Alert>
                                     <AlertDescription>
                                         Alle Preise verstehen sich inklusive der gesetzlichen Mehrwertsteuer.
-                                        Die Berechnung basiert auf einer Startgebühr von 799€ plus 39€ pro Gläubiger.
+                                        {!formData.manuellerPreis
+                                            ? ' Die Berechnung basiert auf einer Startgebühr von 799€ plus 39€ pro Gläubiger.'
+                                            : ' Ein manueller Preis wurde festgelegt.'}
                                         Die Ratenzahlung ist zinslos.
                                     </AlertDescription>
                                 </Alert>
                             </div>
                         </CardContent>
                     </Card>
+
                     {/* Zustellungsart */}
                     <Card className="mb-6 bg-white shadow-lg hover:shadow-xl transition-shadow">
                         <CardHeader>
@@ -676,109 +762,219 @@ const PrivatinsolvenzFormular = () => {
                                 {/* Bearbeitungsstart */}
                                 <div>
                                     <h3 className="font-medium mb-3">Bearbeitung starten:</h3>
-                                    <div className="flex items-center gap-8">
-                                        <label className="flex items-center space-x-2 cursor-pointer">
-                                            <div className="p-3">
-                                                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
-                                ${formData.bearbeitungStart === '1' ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
-                                                    onClick={() => setFormData(prev => ({
-                                                        ...prev,
-                                                        bearbeitungStart: '1'
-                                                    }))}
-                                                >
-                                                    {formData.bearbeitungStart === '1' && (
-                                                        <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                                        </svg>
-                                                    )}
-                                                </div>
-                                            </div>
-                                            <span>zum 1. des Monats</span>
-                                        </label>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                        <div>
+                                            <label className="block mb-2">Tag</label>
+                                            <div className="flex items-center gap-8">
+                                                <label className="flex items-center space-x-2 cursor-pointer">
+                                                    <div className="p-3">
+                                                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
+                                    ${formData.bearbeitungStart === '1' ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
+                                                            onClick={() => setFormData(prev => ({
+                                                                ...prev,
+                                                                bearbeitungStart: '1'
+                                                            }))}
+                                                        >
+                                                            {formData.bearbeitungStart === '1' && (
+                                                                <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                                </svg>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                    <span>zum 1.</span>
+                                                </label>
 
-                                        <label className="flex items-center space-x-2 cursor-pointer">
-                                            <div className="p-3">
-                                                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
-                                ${formData.bearbeitungStart === '15' ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
-                                                    onClick={() => setFormData(prev => ({
-                                                        ...prev,
-                                                        bearbeitungStart: '15'
-                                                    }))}
-                                                >
-                                                    {formData.bearbeitungStart === '15' && (
-                                                        <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                                        </svg>
-                                                    )}
-                                                </div>
+                                                <label className="flex items-center space-x-2 cursor-pointer">
+                                                    <div className="p-3">
+                                                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
+                                    ${formData.bearbeitungStart === '15' ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
+                                                            onClick={() => setFormData(prev => ({
+                                                                ...prev,
+                                                                bearbeitungStart: '15'
+                                                            }))}
+                                                        >
+                                                            {formData.bearbeitungStart === '15' && (
+                                                                <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                                </svg>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                    <span>zum 15.</span>
+                                                </label>
                                             </div>
-                                            <span>zum 15. des Monats</span>
-                                        </label>
+                                        </div>
+                                        <div>
+                                            <label className="block mb-2">Monat</label>
+                                            <select
+                                                name="bearbeitungMonat"
+                                                value={formData.bearbeitungMonat || ''}
+                                                onChange={handleInputChange}
+                                                className="w-full p-2 border-[1px] rounded focus:outline-none focus:border-gray-400"
+                                            >
+                                                <option value="">Aktueller Monat</option>
+                                                <option value="1">Januar</option>
+                                                <option value="2">Februar</option>
+                                                <option value="3">März</option>
+                                                <option value="4">April</option>
+                                                <option value="5">Mai</option>
+                                                <option value="6">Juni</option>
+                                                <option value="7">Juli</option>
+                                                <option value="8">August</option>
+                                                <option value="9">September</option>
+                                                <option value="10">Oktober</option>
+                                                <option value="11">November</option>
+                                                <option value="12">Dezember</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Abrechnungsstart */}
+                                <div>
+                                    <h3 className="font-medium mb-3">Bearbeitung starten:</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                        <div>
+                                            <label className="block mb-2">Tag</label>
+                                            <div className="flex items-center gap-8">
+                                                <label className="flex items-center space-x-2 cursor-pointer">
+                                                    <div className="p-3">
+                                                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
+                                    ${formData.bearbeitungStart === '1' ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
+                                                            onClick={() => setFormData(prev => ({
+                                                                ...prev,
+                                                                bearbeitungStart: '1'
+                                                            }))}
+                                                        >
+                                                            {formData.bearbeitungStart === '1' && (
+                                                                <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                                </svg>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                    <span>zum 1.</span>
+                                                </label>
+
+                                                <label className="flex items-center space-x-2 cursor-pointer">
+                                                    <div className="p-3">
+                                                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
+                                    ${formData.bearbeitungStart === '15' ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
+                                                            onClick={() => setFormData(prev => ({
+                                                                ...prev,
+                                                                bearbeitungStart: '15'
+                                                            }))}
+                                                        >
+                                                            {formData.bearbeitungStart === '15' && (
+                                                                <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                                </svg>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                    <span>zum 15.</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block mb-2">Monat</label>
+                                            <select
+                                                name="bearbeitungMonat"
+                                                value={formData.bearbeitungMonat || ''}
+                                                onChange={handleInputChange}
+                                                className="w-full p-2 border-[1px] rounded focus:outline-none focus:border-gray-400"
+                                            >
+                                                <option value="">Aktueller Monat</option>
+                                                <option value="1">Januar</option>
+                                                <option value="2">Februar</option>
+                                                <option value="3">März</option>
+                                                <option value="4">April</option>
+                                                <option value="5">Mai</option>
+                                                <option value="6">Juni</option>
+                                                <option value="7">Juli</option>
+                                                <option value="8">August</option>
+                                                <option value="9">September</option>
+                                                <option value="10">Oktober</option>
+                                                <option value="11">November</option>
+                                                <option value="12">Dezember</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
 
                                 {/* Abrechnungsstart */}
                                 <div>
                                     <h3 className="font-medium mb-3">Abrechnung starten:</h3>
-                                    <div className="flex items-center gap-8">
-                                        <label className="flex items-center space-x-2 cursor-pointer">
-                                            <div className="p-3">
-                                                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
-                                ${formData.abrechnungStart === '1' ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
-                                                    onClick={() => setFormData(prev => ({
-                                                        ...prev,
-                                                        abrechnungStart: '1'
-                                                    }))}
-                                                >
-                                                    {formData.abrechnungStart === '1' && (
-                                                        <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                                        </svg>
-                                                    )}
-                                                </div>
-                                            </div>
-                                            <span>zum 1. des Monats</span>
-                                        </label>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block mb-2">Tag</label>
+                                            <div className="flex items-center gap-8">
+                                                <label className="flex items-center space-x-2 cursor-pointer">
+                                                    <div className="p-3">
+                                                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
+                                    ${formData.abrechnungStart === '1' ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
+                                                            onClick={() => setFormData(prev => ({
+                                                                ...prev,
+                                                                abrechnungStart: '1'
+                                                            }))}
+                                                        >
+                                                            {formData.abrechnungStart === '1' && (
+                                                                <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                                </svg>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                    <span>zum 1.</span>
+                                                </label>
 
-                                        <label className="flex items-center space-x-2 cursor-pointer">
-                                            <div className="p-3">
-                                                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
-                                ${formData.abrechnungStart === '15' ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
-                                                    onClick={() => setFormData(prev => ({
-                                                        ...prev,
-                                                        abrechnungStart: '15'
-                                                    }))}
-                                                >
-                                                    {formData.abrechnungStart === '15' && (
-                                                        <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                                        </svg>
-                                                    )}
-                                                </div>
+                                                <label className="flex items-center space-x-2 cursor-pointer">
+                                                    <div className="p-3">
+                                                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
+                                    ${formData.abrechnungStart === '15' ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
+                                                            onClick={() => setFormData(prev => ({
+                                                                ...prev,
+                                                                abrechnungStart: '15'
+                                                            }))}
+                                                        >
+                                                            {formData.abrechnungStart === '15' && (
+                                                                <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                                </svg>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                    <span>zum 15.</span>
+                                                </label>
                                             </div>
-                                            <span>zum 15. des Monats</span>
-                                        </label>
+                                        </div>
+                                        <div>
+                                            <label className="block mb-2">Monat</label>
+                                            <select
+                                                name="abrechnungMonat"
+                                                value={formData.abrechnungMonat || ''}
+                                                onChange={handleInputChange}
+                                                className="w-full p-2 border-[1px] rounded focus:outline-none focus:border-gray-400"
+                                            >
+                                                <option value="">Aktueller Monat</option>
+                                                <option value="1">Januar</option>
+                                                <option value="2">Februar</option>
+                                                <option value="3">März</option>
+                                                <option value="4">April</option>
+                                                <option value="5">Mai</option>
+                                                <option value="6">Juni</option>
+                                                <option value="7">Juli</option>
+                                                <option value="8">August</option>
+                                                <option value="9">September</option>
+                                                <option value="10">Oktober</option>
+                                                <option value="11">November</option>
+                                                <option value="12">Dezember</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                    {/* Notizfeld */}
-                    <Card className="mb-6 bg-white shadow-lg hover:shadow-xl transition-shadow">
-                        <CardHeader>
-                            <CardTitle>10. Notizen</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div>
-                                <label className="block mb-2">Interne Notizen</label>
-                                <textarea
-                                    name="notizen"
-                                    value={formData.notizen || ""}
-                                    onChange={handleInputChange}
-                                    placeholder="Hier können Sie wichtige Informationen oder Hinweise notieren..."
-                                    className="w-full p-3 border-[1px] rounded focus:outline-none focus:border-gray-400 min-h-[120px]"
-                                />
-                            </div>
+                            </div> {/* Hier wird das äußere div mit className="space-y-6" geschlossen */}
                         </CardContent>
                     </Card>
 

@@ -89,6 +89,10 @@ exports.updateForm = async (req, res) => {
             await axios.post(makeWebhookUrl, {
                 ...updatedForm.toObject(),
                 preisKalkulation: {
+                    berechnungsart: updatedForm.manuellerPreis ? 'manuell' : 'auto',
+                    manuell: updatedForm.manuellerPreis || false,
+                    manuellerPreisBetrag: updatedForm.manuellerPreisBetrag || "",
+                    manuellerPreisNotiz: updatedForm.manuellerPreisNotiz || "",
                     startgebuehr,
                     preisProGlaeubiger,
                     anzahlGlaeubiger,
@@ -101,6 +105,12 @@ exports.updateForm = async (req, res) => {
                 zustellung: {
                     perPost: updatedForm.zustellungPost,
                     perEmail: updatedForm.zustellungEmail
+                },
+                terminierung: {
+                    bearbeitungStart: updatedForm.bearbeitungStart,
+                    bearbeitungMonat: updatedForm.bearbeitungMonat,
+                    abrechnungStart: updatedForm.abrechnungStart,
+                    abrechnungMonat: updatedForm.abrechnungMonat
                 },
                 qualifizierungsStatus: updatedForm.qualifiziert
             });
