@@ -89,7 +89,8 @@ exports.updateForm = async (req, res) => {
             await axios.post(makeWebhookUrl, {
                 ...updatedForm.toObject(),
                 preisKalkulation: {
-                    berechnungsart: updatedForm.manuellerPreis ? 'manuell' : 'auto',
+                    berechnungsart: updatedForm.manuellerPreis ? 'manuell' :
+                        (calculatedPfandungsPrice > calculatedStandardPrice ? 'nach Pfändung' : 'nach Gläubiger'),
                     manuell: updatedForm.manuellerPreis || false,
                     manuellerPreisBetrag: updatedForm.manuellerPreisBetrag || "",
                     manuellerPreisNotiz: updatedForm.manuellerPreisNotiz || "",
