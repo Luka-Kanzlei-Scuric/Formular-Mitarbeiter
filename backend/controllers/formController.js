@@ -75,7 +75,26 @@ exports.updateForm = async (req, res) => {
         const startgebuehr = 799;
         const preisProGlaeubiger = 39;
         const anzahlGlaeubiger = parseInt(updatedForm.glaeubiger) || 0;
-        const gesamtPreis = startgebuehr + (anzahlGlaeubiger * preisProGlaeubiger);
+        const standardPrice = startgebuehr + (anzahlGlaeubiger * preisProGlaeubiger);
+
+        // Berechnung des Pfändungspreises - einfache Schätzung
+        const nettoEinkommen = parseFloat(updatedForm.nettoEinkommen) || 0;
+        const kinderAnzahl = parseInt(updatedForm.kinderAnzahl) || 0;
+        let pfandungsPrice = 0;
+
+        // Einfache Berechnung: Wenn Einkommen über 1500€, 20% des Überschusses ist pfändbar
+        if (nettoEinkommen > 1500) {
+            pfandungsPrice = (nettoEinkommen - 1500) * 0.2;
+            // Reduziere für jedes Kind um 5%
+            pfandungsPrice = pfandungsPrice * (1 - (kinderAnzahl * 0.05));
+            // Multipliziere mit 3 Monaten für den Gesamtbetrag
+            pfandungsPrice = pfandungsPrice * 3;
+        }
+
+        // Verwende den höheren Preis
+        const gesamtPreis = updatedForm.manuellerPreis ?
+            parseFloat(updatedForm.manuellerPreisBetrag) || standardPrice :
+            Math.max(standardPrice, pfandungsPrice);
 
         // Berechne Raten
         let monate = updatedForm.ratenzahlungMonate === 'custom'
@@ -86,11 +105,11 @@ exports.updateForm = async (req, res) => {
         // Sende Daten an make.com
         try {
             const makeWebhookUrl = 'https://hook.eu2.make.com/wm49imwg7p08738f392n8pu2hgwwzpac';
-            await axios.post(makeWebhookUrl, {
+            const response = await axios.post(makeWebhookUrl, {
                 ...updatedForm.toObject(),
                 preisKalkulation: {
                     berechnungsart: updatedForm.manuellerPreis ? 'manuell' :
-                        (calculatedPfandungsPrice > calculatedStandardPrice ? 'nach Pfändung' : 'nach Gläubiger'),
+                        (pfandungsPrice > standardPrice ? 'nach Pfändung' : 'nach Gläubiger'),
                     manuell: updatedForm.manuellerPreis || false,
                     manuellerPreisBetrag: updatedForm.manuellerPreisBetrag || "",
                     manuellerPreisNotiz: updatedForm.manuellerPreisNotiz || "",
@@ -115,9 +134,13 @@ exports.updateForm = async (req, res) => {
                 },
                 qualifizierungsStatus: updatedForm.qualifiziert
             });
-            console.log("✅ Daten an make.com gesendet");
+            console.log("✅ Daten an make.com gesendet", response.status);
         } catch (makeError) {
             console.error("⚠️ Make.com Update fehlgeschlagen:", makeError.message);
+            // Ausführlichere Fehlerinformationen bei vorhandener Response
+            if (makeError.response) {
+                console.error("Make.com Response:", makeError.response.data);
+            }
         }
 
         console.log("✅ Formular erfolgreich aktualisiert:", updatedForm);
