@@ -45,20 +45,27 @@ const PrivatinsolvenzFormular = () => {
         zusatzEinkommen: '',
         immobilien: false,
         immobilienDetails: '',
-        bankguthaben: '',
+        immobilieAusland: false,
+        sparbuch: false,
+        sparbuchWert: '',
+        lebensversicherung: false,
+        lebensversicherungWert: '',
+        bausparvertrag: false,
+        bausparvertragWert: '',
+        rentenversicherung: false,
+        rentenversicherungWert: '',
+        weitereVermoegen: false,
+        weitereVermoegenDetails: '',
         fahrzeuge: false,
         fahrzeugWert: '',
         fahrzeugFinanziert: false,
         fahrzeugKreditsumme: '',
-        fahrzeugGepfaendet: false,
+        fahrzeugbriefBank: false,
         fahrzeugNotwendig: false,
         schenkungAngehoerige: false,
         schenkungAngehoerigeDetails: '',
         schenkungAndere: false,
         schenkungAndereDetails: '',
-        lebensversicherung: false,
-        versicherungWert: '',
-        sonstigeVermoegen: '',
         gesamtSchulden: '',
         glaeubiger: '',
         forderungenOeffentlich: '',
@@ -420,14 +427,36 @@ const PrivatinsolvenzFormular = () => {
                                         <span>Immobilienbesitz vorhanden</span>
                                     </label>
                                     {formData.immobilien && (
-                                        <input
-                                            type="text"
-                                            name="immobilienDetails"
-                                            value={formData.immobilienDetails}
-                                            onChange={handleInputChange}
-                                            placeholder="Details zum Immobilienbesitz"
-                                            className="w-full mt-2 p-2 border rounded"
-                                        />
+                                        <div className="pl-6 space-y-3 mt-2">
+                                            <input
+                                                type="text"
+                                                name="immobilienDetails"
+                                                value={formData.immobilienDetails}
+                                                onChange={handleInputChange}
+                                                placeholder="Details zum Immobilienbesitz"
+                                                className="w-full p-2 border rounded"
+                                            />
+                                            
+                                            <label className="flex items-center space-x-2">
+                                                <input
+                                                    type="checkbox"
+                                                    name="immobilieAusland"
+                                                    checked={formData.immobilieAusland || false}
+                                                    onChange={handleInputChange}
+                                                    className="h-4 w-4"
+                                                />
+                                                <span>Immobilie im Ausland</span>
+                                            </label>
+                                            
+                                            {formData.immobilieAusland && (
+                                                <Alert className="mt-1" variant="destructive">
+                                                    <AlertTriangle className="h-4 w-4" />
+                                                    <AlertDescription>
+                                                        ACHTUNG: Bei Immobilien im Ausland können wir nicht weiterhelfen.
+                                                    </AlertDescription>
+                                                </Alert>
+                                            )}
+                                        </div>
                                     )}
                                 </div>
                                 <div>
@@ -477,16 +506,18 @@ const PrivatinsolvenzFormular = () => {
                                                 )}
                                             </div>
                                             
-                                            <label className="flex items-center space-x-2">
-                                                <input
-                                                    type="checkbox"
-                                                    name="fahrzeugGepfaendet"
-                                                    checked={formData.fahrzeugGepfaendet || false}
-                                                    onChange={handleInputChange}
-                                                    className="h-4 w-4"
-                                                />
-                                                <span>Bereits gepfändet</span>
-                                            </label>
+                                            {formData.fahrzeugFinanziert && (
+                                                <label className="flex items-center space-x-2">
+                                                    <input
+                                                        type="checkbox"
+                                                        name="fahrzeugbriefBank"
+                                                        checked={formData.fahrzeugbriefBank || false}
+                                                        onChange={handleInputChange}
+                                                        className="h-4 w-4"
+                                                    />
+                                                    <span>Fahrzeugbrief bei der Bank</span>
+                                                </label>
+                                            )}
                                             
                                             <label className="flex items-center space-x-2">
                                                 <input
@@ -573,14 +604,124 @@ const PrivatinsolvenzFormular = () => {
                                     )}
                                 </div>
 
-                                <div>
-                                    <label className="block mb-2">Bankguthaben</label>
-                                    <input
-                                        type="number"
-                                        name="bankguthaben"
-                                        value={formData.bankguthaben}
-                                        onChange={handleInputChange}
-                                        className="w-full p-2 border-[1px] rounded focus:outline-none focus:border-gray-400" />
+                                <div className="pt-4">
+                                    <h3 className="font-medium mb-3">Vermögen</h3>
+                                    <div className="space-y-4 pl-2">
+                                        <div>
+                                            <label className="flex items-center space-x-2">
+                                                <input
+                                                    type="checkbox"
+                                                    name="sparbuch"
+                                                    checked={formData.sparbuch || false}
+                                                    onChange={handleInputChange}
+                                                    className="h-4 w-4"
+                                                />
+                                                <span>Sparbuch</span>
+                                            </label>
+                                            {formData.sparbuch && (
+                                                <input
+                                                    type="text"
+                                                    name="sparbuchWert"
+                                                    value={formData.sparbuchWert || ''}
+                                                    onChange={handleInputChange}
+                                                    placeholder="Wert/Details"
+                                                    className="w-full mt-2 ml-6 p-2 border rounded"
+                                                />
+                                            )}
+                                        </div>
+                                        
+                                        <div>
+                                            <label className="flex items-center space-x-2">
+                                                <input
+                                                    type="checkbox"
+                                                    name="lebensversicherung"
+                                                    checked={formData.lebensversicherung || false}
+                                                    onChange={handleInputChange}
+                                                    className="h-4 w-4"
+                                                />
+                                                <span>Lebensversicherung</span>
+                                            </label>
+                                            {formData.lebensversicherung && (
+                                                <input
+                                                    type="text"
+                                                    name="lebensversicherungWert"
+                                                    value={formData.lebensversicherungWert || ''}
+                                                    onChange={handleInputChange}
+                                                    placeholder="Wert/Details"
+                                                    className="w-full mt-2 ml-6 p-2 border rounded"
+                                                />
+                                            )}
+                                        </div>
+                                        
+                                        <div>
+                                            <label className="flex items-center space-x-2">
+                                                <input
+                                                    type="checkbox"
+                                                    name="bausparvertrag"
+                                                    checked={formData.bausparvertrag || false}
+                                                    onChange={handleInputChange}
+                                                    className="h-4 w-4"
+                                                />
+                                                <span>Bausparvertrag</span>
+                                            </label>
+                                            {formData.bausparvertrag && (
+                                                <input
+                                                    type="text"
+                                                    name="bausparvertragWert"
+                                                    value={formData.bausparvertragWert || ''}
+                                                    onChange={handleInputChange}
+                                                    placeholder="Wert/Details"
+                                                    className="w-full mt-2 ml-6 p-2 border rounded"
+                                                />
+                                            )}
+                                        </div>
+                                        
+                                        <div>
+                                            <label className="flex items-center space-x-2">
+                                                <input
+                                                    type="checkbox"
+                                                    name="rentenversicherung"
+                                                    checked={formData.rentenversicherung || false}
+                                                    onChange={handleInputChange}
+                                                    className="h-4 w-4"
+                                                />
+                                                <span>Rentenversicherung</span>
+                                            </label>
+                                            {formData.rentenversicherung && (
+                                                <input
+                                                    type="text"
+                                                    name="rentenversicherungWert"
+                                                    value={formData.rentenversicherungWert || ''}
+                                                    onChange={handleInputChange}
+                                                    placeholder="Wert/Details"
+                                                    className="w-full mt-2 ml-6 p-2 border rounded"
+                                                />
+                                            )}
+                                        </div>
+                                        
+                                        <div>
+                                            <label className="flex items-center space-x-2">
+                                                <input
+                                                    type="checkbox"
+                                                    name="weitereVermoegen"
+                                                    checked={formData.weitereVermoegen || false}
+                                                    onChange={handleInputChange}
+                                                    className="h-4 w-4"
+                                                />
+                                                <span>Weitere Vermögenswerte</span>
+                                            </label>
+                                            {formData.weitereVermoegen && (
+                                                <input
+                                                    type="text"
+                                                    name="weitereVermoegenDetails"
+                                                    value={formData.weitereVermoegenDetails || ''}
+                                                    onChange={handleInputChange}
+                                                    placeholder="Details zu weiteren Vermögenswerten"
+                                                    className="w-full mt-2 ml-6 p-2 border rounded"
+                                                />
+                                            )}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </CardContent>
