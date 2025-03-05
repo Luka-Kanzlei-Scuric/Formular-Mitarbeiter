@@ -33,10 +33,9 @@ const PrivatinsolvenzFormular = () => {
         hausnummer: '',
         wohnort: '',
         plz: '',
+        unterhaltspflicht: false,
         kinderAnzahl: '',
-        kinderAlter: '',
-        unterhaltspflicht: '',
-        unterhaltHoehe: '',
+        unterhaltArt: '',
         beschaeftigungsArt: '',
         befristet: false,
         selbststaendig: false,
@@ -304,23 +303,74 @@ const PrivatinsolvenzFormular = () => {
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block mb-2">Anzahl Kinder</label>
-                                    <input
-                                        type="number"
-                                        name="kinderAnzahl"
-                                        value={formData.kinderAnzahl}
-                                        onChange={handleInputChange}
-                                        className="w-full p-2 border-[1px] rounded focus:outline-none focus:border-gray-400" />
-                                </div>
-                                <div>
-                                    <label className="block mb-2">Alter der Kinder</label>
-                                    <input
-                                        type="text"
-                                        name="kinderAlter"
-                                        value={formData.kinderAlter}
-                                        onChange={handleInputChange}
-                                        className="w-full p-2 border-[1px] rounded focus:outline-none focus:border-gray-400" placeholder="z.B.: 4, 7, 12"
-                                    />
+                                    <label className="flex items-center space-x-2">
+                                        <input
+                                            type="checkbox"
+                                            name="unterhaltspflicht"
+                                            checked={formData.unterhaltspflicht || false}
+                                            onChange={handleInputChange}
+                                            className="h-4 w-4"
+                                        />
+                                        <span>Unterhaltspflichtige Kinder</span>
+                                    </label>
+                                    {formData.unterhaltspflicht && (
+                                        <div className="pl-6 space-y-3 mt-2">
+                                            <div>
+                                                <label className="block mb-2">Anzahl unterhaltspflichtiger Kinder</label>
+                                                <input
+                                                    type="number"
+                                                    name="kinderAnzahl"
+                                                    value={formData.kinderAnzahl}
+                                                    onChange={handleInputChange}
+                                                    className="w-full p-2 border-[1px] rounded focus:outline-none focus:border-gray-400" />
+                                            </div>
+                                            
+                                            <Alert className="mt-1">
+                                                <AlertDescription>
+                                                    Hinweis: Unterhaltspflichtige Kinder sind minderjährige Kinder oder Kinder in Schule/Ausbildung
+                                                </AlertDescription>
+                                            </Alert>
+                                            
+                                            <div>
+                                                <label className="block mb-2">Wird Unterhalt gewährt?</label>
+                                                <div className="space-y-2">
+                                                    <label className="flex items-center space-x-2">
+                                                        <input
+                                                            type="radio"
+                                                            name="unterhaltArt"
+                                                            value="barunterhalt"
+                                                            checked={formData.unterhaltArt === 'barunterhalt'}
+                                                            onChange={handleInputChange}
+                                                            className="h-4 w-4"
+                                                        />
+                                                        <span>Barunterhalt</span>
+                                                    </label>
+                                                    <label className="flex items-center space-x-2">
+                                                        <input
+                                                            type="radio"
+                                                            name="unterhaltArt"
+                                                            value="naturalunterhalt"
+                                                            checked={formData.unterhaltArt === 'naturalunterhalt'}
+                                                            onChange={handleInputChange}
+                                                            className="h-4 w-4"
+                                                        />
+                                                        <span>Naturalunterhalt</span>
+                                                    </label>
+                                                    <label className="flex items-center space-x-2">
+                                                        <input
+                                                            type="radio"
+                                                            name="unterhaltArt"
+                                                            value="kein"
+                                                            checked={formData.unterhaltArt === 'kein'}
+                                                            onChange={handleInputChange}
+                                                            className="h-4 w-4"
+                                                        />
+                                                        <span>Kein Unterhalt</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Zweite Zeile */}
