@@ -324,7 +324,7 @@ const PrivatinsolvenzFormular = () => {
                                     </div>
                                     
                                     {formData.unterhaltspflicht && (
-                                        <div className="pl-7 space-y-4 mt-3 animate-fadeIn">
+                                        <div className="sm:pl-7 space-y-4 mt-3 animate-fadeIn">
                                             <div className="bg-white p-3 rounded-md shadow-sm border border-blue-100">
                                                 <label className="block mb-2 font-medium text-gray-700">Anzahl unterhaltspflichtiger Kinder</label>
                                                 <input
@@ -341,10 +341,10 @@ const PrivatinsolvenzFormular = () => {
                                             
                                             <div className="bg-white p-3 rounded-md shadow-sm border border-blue-100">
                                                 <label className="block mb-3 font-medium text-gray-700">Wird Unterhalt gewährt?</label>
-                                                <div className="grid grid-cols-3 gap-2">
-                                                    <label className={`flex flex-col items-center p-2 border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors duration-200 
+                                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                                    <label className={`flex items-center sm:flex-col p-2 border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors duration-200 
                                                         ${formData.unterhaltArt === 'barunterhalt' ? 'bg-blue-100 border-blue-400' : ''}`}>
-                                                        <div className="flex justify-center items-center mb-2 h-6">
+                                                        <div className="flex justify-center items-center sm:mb-2 h-6 mr-2 sm:mr-0">
                                                             <input
                                                                 type="radio"
                                                                 name="unterhaltArt"
@@ -354,12 +354,12 @@ const PrivatinsolvenzFormular = () => {
                                                                 className="h-4 w-4 text-blue-600 focus:ring-blue-500"
                                                             />
                                                         </div>
-                                                        <span className="text-center">Barunterhalt</span>
+                                                        <span className="sm:text-center">Barunterhalt</span>
                                                     </label>
                                                     
-                                                    <label className={`flex flex-col items-center p-2 border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors duration-200
+                                                    <label className={`flex items-center sm:flex-col p-2 border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors duration-200
                                                         ${formData.unterhaltArt === 'naturalunterhalt' ? 'bg-blue-100 border-blue-400' : ''}`}>
-                                                        <div className="flex justify-center items-center mb-2 h-6">
+                                                        <div className="flex justify-center items-center sm:mb-2 h-6 mr-2 sm:mr-0">
                                                             <input
                                                                 type="radio"
                                                                 name="unterhaltArt"
@@ -369,12 +369,12 @@ const PrivatinsolvenzFormular = () => {
                                                                 className="h-4 w-4 text-blue-600 focus:ring-blue-500"
                                                             />
                                                         </div>
-                                                        <span className="text-center">Naturalunterhalt</span>
+                                                        <span className="sm:text-center">Naturalunterhalt</span>
                                                     </label>
                                                     
-                                                    <label className={`flex flex-col items-center p-2 border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors duration-200
+                                                    <label className={`flex items-center sm:flex-col p-2 border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors duration-200
                                                         ${formData.unterhaltArt === 'kein' ? 'bg-blue-100 border-blue-400' : ''}`}>
-                                                        <div className="flex justify-center items-center mb-2 h-6">
+                                                        <div className="flex justify-center items-center sm:mb-2 h-6 mr-2 sm:mr-0">
                                                             <input
                                                                 type="radio"
                                                                 name="unterhaltArt"
@@ -384,7 +384,7 @@ const PrivatinsolvenzFormular = () => {
                                                                 className="h-4 w-4 text-blue-600 focus:ring-blue-500"
                                                             />
                                                         </div>
-                                                        <span className="text-center">Kein Unterhalt</span>
+                                                        <span className="sm:text-center">Kein Unterhalt</span>
                                                     </label>
                                                 </div>
                                             </div>
