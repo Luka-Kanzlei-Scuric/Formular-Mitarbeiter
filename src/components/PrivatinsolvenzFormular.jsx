@@ -451,39 +451,54 @@ const PrivatinsolvenzFormular = () => {
                             <CardTitle>3. Berufliche Situation</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block mb-2">Art der Beschäftigung</label>
-                                    <select
-                                        name="beschaeftigungsArt"
-                                        value={formData.beschaeftigungsArt}
-                                        onChange={handleInputChange}
-                                        className="w-full p-2 border-[1px] rounded focus:outline-none focus:border-gray-400"                            >
-                                        <option value="">Bitte wählen</option>
-                                        <option value="angestellt">Angestellt</option>
-                                        <option value="selbststaendig">Selbstständig</option>
-                                        <option value="arbeitslos">Arbeitslos</option>
-                                    </select>
+                            <div className="bg-gray-50 p-4 rounded-lg">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                    <div>
+                                        <label className="block mb-2 font-medium text-gray-700">Art der Beschäftigung</label>
+                                        <select
+                                            name="beschaeftigungsArt"
+                                            value={formData.beschaeftigungsArt}
+                                            onChange={handleInputChange}
+                                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
+                                        >
+                                            <option value="">Bitte wählen</option>
+                                            <option value="angestellt">Angestellt</option>
+                                            <option value="selbststaendig">Selbstständig</option>
+                                            <option value="arbeitslos">Arbeitslos</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="block mb-2 font-medium text-gray-700">Netto-Einkommen</label>
+                                        <div className="relative">
+                                            <input
+                                                type="number"
+                                                name="nettoEinkommen"
+                                                value={formData.nettoEinkommen}
+                                                onChange={handleInputChange}
+                                                placeholder="0,00"
+                                                className="w-full p-3 pl-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all" 
+                                            />
+                                            <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                                <span className="text-gray-500">€</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <label className="block mb-2">Netto-Einkommen</label>
-                                    <input
-                                        type="number"
-                                        name="nettoEinkommen"
-                                        value={formData.nettoEinkommen}
-                                        onChange={handleInputChange}
-                                        className="w-full p-2 border-[1px] rounded focus:outline-none focus:border-gray-400" />
-                                </div>
-                            </div>
 
-                            {formData.beschaeftigungsArt === 'selbststaendig' && (
-                                <Alert className="mt-4" variant="destructive">
-                                    <AlertTriangle className="h-4 w-4" />
-                                    <AlertDescription>
-                                        ACHTUNG: Bei Selbstständigkeit Rechtsform genau prüfen!
-                                    </AlertDescription>
-                                </Alert>
-                            )}
+                                {formData.beschaeftigungsArt === 'selbststaendig' && (
+                                    <div className="mt-4 bg-red-50 p-4 rounded-lg border border-red-200 animate-fadeIn">
+                                        <div className="flex items-start">
+                                            <AlertTriangle className="h-5 w-5 text-red-500 mt-0.5" />
+                                            <div className="ml-3">
+                                                <h4 className="text-sm font-medium text-red-800">Wichtiger Hinweis</h4>
+                                                <p className="mt-1 text-sm text-red-700">
+                                                    Bei Selbstständigkeit muss die Rechtsform genau geprüft werden!
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </CardContent>
                     </Card>
 
@@ -812,43 +827,61 @@ const PrivatinsolvenzFormular = () => {
                             <CardTitle>5. Schuldensituation</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block mb-2">Gesamtschuldenhöhe</label>
-                                    <input
-                                        type="number"
-                                        name="gesamtSchulden"
-                                        value={formData.gesamtSchulden}
-                                        onChange={handleInputChange}
-                                        className="w-full p-2 border-[1px] rounded focus:outline-none focus:border-gray-400" />
+                            <div className="bg-gray-50 p-4 rounded-lg">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-5">
+                                    <div>
+                                        <label className="block mb-2 font-medium text-gray-700">Gesamtschuldenhöhe</label>
+                                        <div className="relative">
+                                            <input
+                                                type="number"
+                                                name="gesamtSchulden"
+                                                value={formData.gesamtSchulden}
+                                                onChange={handleInputChange}
+                                                placeholder="0,00"
+                                                className="w-full p-3 pl-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all" 
+                                            />
+                                            <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                                <span className="text-gray-500">€</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="block mb-2 font-medium text-gray-700">Anzahl Gläubiger</label>
+                                        <input
+                                            type="number"
+                                            name="glaeubiger"
+                                            value={formData.glaeubiger}
+                                            onChange={handleInputChange}
+                                            placeholder="0"
+                                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all" 
+                                        />
+                                    </div>
                                 </div>
-                                <div>
-                                    <label className="block mb-2">Anzahl Gläubiger</label>
-                                    <input
-                                        type="number"
-                                        name="glaeubiger"
-                                        value={formData.glaeubiger}
-                                        onChange={handleInputChange}
-                                        className="w-full p-2 border-[1px] rounded focus:outline-none focus:border-gray-400" />
-                                </div>
-                                <div>
-                                    <label className="flex items-center space-x-2">
+                                
+                                <div className="bg-white p-4 rounded-lg border border-gray-200">
+                                    <label className="flex items-center space-x-2 cursor-pointer">
                                         <input
                                             type="checkbox"
                                             name="vorherigeInsolvenz"
                                             checked={formData.vorherigeInsolvenz}
                                             onChange={handleInputChange}
-                                            className="h-4 w-4"
+                                            className="h-5 w-5 text-blue-600 rounded"
                                         />
-                                        <span>Vorherige Insolvenz</span>
+                                        <span className="font-medium">Vorherige Insolvenz</span>
                                     </label>
+                                    
                                     {formData.vorherigeInsolvenz && (
-                                        <Alert className="mt-2" variant="destructive">
-                                            <AlertTriangle className="h-4 w-4" />
-                                            <AlertDescription>
-                                                ACHTUNG: 10-Jahres-Sperrfrist beachten!
-                                            </AlertDescription>
-                                        </Alert>
+                                        <div className="mt-3 bg-red-50 p-4 rounded-lg border border-red-200 animate-fadeIn">
+                                            <div className="flex items-start">
+                                                <AlertTriangle className="h-5 w-5 text-red-500 mt-0.5" />
+                                                <div className="ml-3">
+                                                    <h4 className="text-sm font-medium text-red-800">Kritischer Hinweis</h4>
+                                                    <p className="mt-1 text-sm text-red-700">
+                                                        ACHTUNG: Die 10-Jahres-Sperrfrist muss unbedingt beachtet werden!
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     )}
                                 </div>
                             </div>
@@ -861,31 +894,94 @@ const PrivatinsolvenzFormular = () => {
                             <CardTitle>6. Ausschlusskriterien prüfen</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="space-y-2">
-                                {formData.glaeubiger > 25 && (
-                                    <Alert variant="destructive">
-                                        <AlertTriangle className="h-4 w-4" />
-                                        <AlertDescription>
-                                            ACHTUNG: Gläubigeranzahl überschreitet Maximum!
-                                        </AlertDescription>
-                                    </Alert>
-                                )}
-                                {formData.vorherigeInsolvenz && (
-                                    <Alert variant="destructive">
-                                        <AlertTriangle className="h-4 w-4" />
-                                        <AlertDescription>
-                                            ACHTUNG: Vorherige Insolvenz - Sperrfrist prüfen!
-                                        </AlertDescription>
-                                    </Alert>
-                                )}
-                                {formData.immobilien && (
-                                    <Alert variant="warning">
-                                        <AlertTriangle className="h-4 w-4" />
-                                        <AlertDescription>
-                                            ACHTUNG: Immobiliensituation muss geklärt werden!
-                                        </AlertDescription>
-                                    </Alert>
-                                )}
+                            <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
+                                <h3 className="font-medium text-amber-800 mb-3">Automatische Prüfung relevanter Kriterien</h3>
+                                
+                                <div className="space-y-3">
+                                    {formData.glaeubiger > 25 ? (
+                                        <div className="bg-red-50 p-3 rounded-lg border border-red-200 flex items-start">
+                                            <div className="bg-red-100 rounded-full p-1 mr-3">
+                                                <AlertTriangle className="h-5 w-5 text-red-500" />
+                                            </div>
+                                            <div>
+                                                <h4 className="font-medium text-red-800">Gläubigeranzahl überschreitet Maximum</h4>
+                                                <p className="text-sm text-red-700 mt-1">
+                                                    Die Anzahl der Gläubiger ({formData.glaeubiger}) übersteigt das Maximum von 25.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="bg-green-50 p-3 rounded-lg border border-green-200 flex items-start opacity-50">
+                                            <div className="bg-green-100 rounded-full p-1 mr-3">
+                                                <svg className="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <h4 className="font-medium text-green-800">Gläubigeranzahl im erlaubten Bereich</h4>
+                                                <p className="text-sm text-green-700 mt-1">
+                                                    Die Anzahl der Gläubiger ist unter dem Maximum von 25.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {formData.vorherigeInsolvenz ? (
+                                        <div className="bg-red-50 p-3 rounded-lg border border-red-200 flex items-start">
+                                            <div className="bg-red-100 rounded-full p-1 mr-3">
+                                                <AlertTriangle className="h-5 w-5 text-red-500" />
+                                            </div>
+                                            <div>
+                                                <h4 className="font-medium text-red-800">Vorherige Insolvenz festgestellt</h4>
+                                                <p className="text-sm text-red-700 mt-1">
+                                                    Die 10-Jahres-Sperrfrist muss unbedingt geprüft werden.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="bg-green-50 p-3 rounded-lg border border-green-200 flex items-start opacity-50">
+                                            <div className="bg-green-100 rounded-full p-1 mr-3">
+                                                <svg className="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <h4 className="font-medium text-green-800">Keine vorherige Insolvenz</h4>
+                                                <p className="text-sm text-green-700 mt-1">
+                                                    Es wurde keine vorherige Insolvenz angegeben.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {formData.immobilien ? (
+                                        <div className="bg-amber-50 p-3 rounded-lg border border-amber-200 flex items-start">
+                                            <div className="bg-amber-100 rounded-full p-1 mr-3">
+                                                <AlertTriangle className="h-5 w-5 text-amber-500" />
+                                            </div>
+                                            <div>
+                                                <h4 className="font-medium text-amber-800">Immobilienbesitz angegeben</h4>
+                                                <p className="text-sm text-amber-700 mt-1">
+                                                    Die Immobiliensituation muss detailliert geklärt werden.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="bg-green-50 p-3 rounded-lg border border-green-200 flex items-start opacity-50">
+                                            <div className="bg-green-100 rounded-full p-1 mr-3">
+                                                <svg className="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <h4 className="font-medium text-green-800">Kein Immobilienbesitz</h4>
+                                                <p className="text-sm text-green-700 mt-1">
+                                                    Es wurde kein Immobilienbesitz angegeben.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
