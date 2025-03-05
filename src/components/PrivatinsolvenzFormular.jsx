@@ -48,6 +48,14 @@ const PrivatinsolvenzFormular = () => {
         bankguthaben: '',
         fahrzeuge: false,
         fahrzeugWert: '',
+        fahrzeugFinanziert: false,
+        fahrzeugKreditsumme: '',
+        fahrzeugGepfaendet: false,
+        fahrzeugNotwendig: false,
+        schenkungAngehoerige: false,
+        schenkungAngehoerigeDetails: '',
+        schenkungAndere: false,
+        schenkungAndereDetails: '',
         lebensversicherung: false,
         versicherungWert: '',
         sonstigeVermoegen: '',
@@ -434,16 +442,137 @@ const PrivatinsolvenzFormular = () => {
                                         <span>Fahrzeug (Auto) vorhanden</span>
                                     </label>
                                     {formData.fahrzeuge && (
-                                        <input
-                                            type="text"
-                                            name="fahrzeugWert"
-                                            value={formData.fahrzeugWert}
-                                            onChange={handleInputChange}
-                                            placeholder="Wert/Details zum Fahrzeug"
-                                            className="w-full mt-2 p-2 border rounded"
-                                        />
+                                        <div className="pl-6 space-y-3 mt-2">
+                                            <input
+                                                type="text"
+                                                name="fahrzeugWert"
+                                                value={formData.fahrzeugWert || ''}
+                                                onChange={handleInputChange}
+                                                placeholder="Wert/Details zum Fahrzeug*"
+                                                required
+                                                className="w-full p-2 border rounded focus:outline-none focus:ring-1 focus:ring-gray-400"
+                                            />
+                                            
+                                            <div>
+                                                <label className="flex items-center space-x-2">
+                                                    <input
+                                                        type="checkbox"
+                                                        name="fahrzeugFinanziert"
+                                                        checked={formData.fahrzeugFinanziert || false}
+                                                        onChange={handleInputChange}
+                                                        className="h-4 w-4"
+                                                    />
+                                                    <span>Finanziert</span>
+                                                </label>
+                                                {formData.fahrzeugFinanziert && (
+                                                    <input
+                                                        type="text"
+                                                        name="fahrzeugKreditsumme"
+                                                        value={formData.fahrzeugKreditsumme || ''}
+                                                        onChange={handleInputChange}
+                                                        placeholder="Offene Kreditsumme*"
+                                                        required
+                                                        className="w-full mt-2 p-2 border rounded focus:outline-none focus:ring-1 focus:ring-gray-400"
+                                                    />
+                                                )}
+                                            </div>
+                                            
+                                            <label className="flex items-center space-x-2">
+                                                <input
+                                                    type="checkbox"
+                                                    name="fahrzeugGepfaendet"
+                                                    checked={formData.fahrzeugGepfaendet || false}
+                                                    onChange={handleInputChange}
+                                                    className="h-4 w-4"
+                                                />
+                                                <span>Bereits gepfändet</span>
+                                            </label>
+                                            
+                                            <label className="flex items-center space-x-2">
+                                                <input
+                                                    type="checkbox"
+                                                    name="fahrzeugNotwendig"
+                                                    checked={formData.fahrzeugNotwendig || false}
+                                                    onChange={handleInputChange}
+                                                    className="h-4 w-4"
+                                                />
+                                                <span>Wird für Arbeitsweg benötigt (öffentliche Verkehrsmittel > 60 min)</span>
+                                            </label>
+                                            
+                                            {formData.fahrzeugNotwendig && (
+                                                <Alert className="mt-1">
+                                                    <AlertDescription>
+                                                        Hinweis: Auto ist nicht pfändbar, wenn der Weg mit öffentlichen Verkehrsmitteln länger als 60 Minuten dauern würde.
+                                                    </AlertDescription>
+                                                </Alert>
+                                            )}
+                                        </div>
                                     )}
                                 </div>
+
+                                <div className="pt-4">
+                                    <label className="flex items-center space-x-2">
+                                        <input
+                                            type="checkbox"
+                                            name="schenkungAngehoerige"
+                                            checked={formData.schenkungAngehoerige || false}
+                                            onChange={handleInputChange}
+                                            className="h-4 w-4"
+                                        />
+                                        <span>In den letzten 2 Jahren etwas an Angehörige verschenkt</span>
+                                    </label>
+                                    {formData.schenkungAngehoerige && (
+                                        <div className="pl-6 mt-2">
+                                            <input
+                                                type="text"
+                                                name="schenkungAngehoerigeDetails"
+                                                value={formData.schenkungAngehoerigeDetails || ''}
+                                                onChange={handleInputChange}
+                                                placeholder="Details zur Schenkung*"
+                                                required
+                                                className="w-full p-2 border rounded focus:outline-none focus:ring-1 focus:ring-gray-400"
+                                            />
+                                            <Alert className="mt-2" variant="destructive">
+                                                <AlertTriangle className="h-4 w-4" />
+                                                <AlertDescription>
+                                                    ACHTUNG: Diese Information muss unbedingt dem Anwalt mitgeteilt werden!
+                                                </AlertDescription>
+                                            </Alert>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div>
+                                    <label className="flex items-center space-x-2">
+                                        <input
+                                            type="checkbox"
+                                            name="schenkungAndere"
+                                            checked={formData.schenkungAndere || false}
+                                            onChange={handleInputChange}
+                                            className="h-4 w-4"
+                                        />
+                                        <span>In den letzten 4 Jahren etwas an andere Personen verschenkt</span>
+                                    </label>
+                                    {formData.schenkungAndere && (
+                                        <div className="pl-6 mt-2">
+                                            <input
+                                                type="text"
+                                                name="schenkungAndereDetails"
+                                                value={formData.schenkungAndereDetails || ''}
+                                                onChange={handleInputChange}
+                                                placeholder="Details zur Schenkung*"
+                                                required
+                                                className="w-full p-2 border rounded focus:outline-none focus:ring-1 focus:ring-gray-400"
+                                            />
+                                            <Alert className="mt-2" variant="default">
+                                                <AlertDescription className="text-blue-700">
+                                                    Hinweis: Der Insolvenzverwalter kann diese Schenkung möglicherweise zurückfordern.
+                                                </AlertDescription>
+                                            </Alert>
+                                        </div>
+                                    )}
+                                </div>
+
                                 <div>
                                     <label className="block mb-2">Bankguthaben</label>
                                     <input
