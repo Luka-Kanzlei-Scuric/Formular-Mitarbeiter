@@ -423,6 +423,28 @@ const PrivatinsolvenzFormular = () => {
                                     )}
                                 </div>
                                 <div>
+                                    <label className="flex items-center space-x-2">
+                                        <input
+                                            type="checkbox"
+                                            name="fahrzeuge"
+                                            checked={formData.fahrzeuge}
+                                            onChange={handleInputChange}
+                                            className="h-4 w-4"
+                                        />
+                                        <span>Fahrzeug (Auto) vorhanden</span>
+                                    </label>
+                                    {formData.fahrzeuge && (
+                                        <input
+                                            type="text"
+                                            name="fahrzeugWert"
+                                            value={formData.fahrzeugWert}
+                                            onChange={handleInputChange}
+                                            placeholder="Wert/Details zum Fahrzeug"
+                                            className="w-full mt-2 p-2 border rounded"
+                                        />
+                                    )}
+                                </div>
+                                <div>
                                     <label className="block mb-2">Bankguthaben</label>
                                     <input
                                         type="number"
