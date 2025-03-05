@@ -287,149 +287,159 @@ const PrivatinsolvenzFormular = () => {
                             <CardTitle>2. Persönliche Daten</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <style jsx global>{`
-                                    @keyframes fadeIn {
-                                      from { opacity: 0; transform: translateY(-10px); }
-                                      to { opacity: 1; transform: translateY(0); }
-                                    }
-                                    .animate-fadeIn {
-                                      animation: fadeIn 0.3s ease-out forwards;
-                                    }
-                                `}</style>
-                                {/* Erste Zeile */}
-                                <div>
-                                    <label className="block mb-2">Familienstand</label>
+                            <style jsx global>{`
+                                @keyframes fadeIn {
+                                  from { opacity: 0; transform: translateY(-10px); }
+                                  to { opacity: 1; transform: translateY(0); }
+                                }
+                                .animate-fadeIn {
+                                  animation: fadeIn 0.3s ease-out forwards;
+                                }
+                            `}</style>
+                            
+                            {/* Familienstand */}
+                            <div className="mb-6">
+                                <div className="bg-gray-50 p-3 rounded-lg">
+                                    <label className="block mb-2 font-medium">Familienstand</label>
                                     <select
                                         name="familienstand"
                                         value={formData.familienstand}
                                         onChange={handleInputChange}
-                                        className="w-full p-2 border-[1px] rounded focus:outline-none focus:border-gray-400"                            >
+                                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all">
                                         <option value="">Bitte wählen</option>
                                         <option value="ledig">Ledig</option>
                                         <option value="verheiratet">Verheiratet</option>
                                         <option value="geschieden">Geschieden</option>
                                     </select>
                                 </div>
-                                <div className="col-span-3 bg-blue-50 p-4 rounded-lg shadow-sm">
-                                    <div className="flex items-center mb-3">
-                                        <input
-                                            type="checkbox"
-                                            name="unterhaltspflicht"
-                                            checked={formData.unterhaltspflicht || false}
-                                            onChange={handleInputChange}
-                                            className="h-5 w-5 text-blue-600"
-                                        />
-                                        <span className="ml-2 font-medium text-blue-800">Unterhaltspflichtige Kinder</span>
-                                    </div>
-                                    
-                                    {formData.unterhaltspflicht && (
-                                        <div className="sm:pl-7 space-y-4 mt-3 animate-fadeIn">
-                                            <div className="bg-white p-3 rounded-md shadow-sm border border-blue-100">
-                                                <label className="block mb-2 font-medium text-gray-700">Anzahl unterhaltspflichtiger Kinder</label>
-                                                <input
-                                                    type="number"
-                                                    name="kinderAnzahl"
-                                                    value={formData.kinderAnzahl}
-                                                    onChange={handleInputChange}
-                                                    className="w-full p-2 border-2 border-blue-100 rounded focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all" />
-                                                
-                                                <div className="mt-2 text-sm text-gray-600 bg-blue-50 p-2 rounded italic">
-                                                    Unterhaltspflichtige Kinder sind minderjährige Kinder oder Kinder in Schule/Ausbildung
-                                                </div>
-                                            </div>
+                            </div>
+                            
+                            {/* Kinder */}
+                            <div className="mb-6 bg-blue-50 p-4 rounded-lg shadow-sm">
+                                <div className="flex items-center mb-3">
+                                    <input
+                                        type="checkbox"
+                                        name="unterhaltspflicht"
+                                        checked={formData.unterhaltspflicht || false}
+                                        onChange={handleInputChange}
+                                        className="h-5 w-5 text-blue-600"
+                                    />
+                                    <span className="ml-2 font-medium text-blue-800">Unterhaltspflichtige Kinder</span>
+                                </div>
+                                
+                                {formData.unterhaltspflicht && (
+                                    <div className="sm:pl-7 space-y-4 mt-3 animate-fadeIn">
+                                        <div className="bg-white p-3 rounded-md shadow-sm border border-blue-100">
+                                            <label className="block mb-2 font-medium text-gray-700">Anzahl unterhaltspflichtiger Kinder</label>
+                                            <input
+                                                type="number"
+                                                name="kinderAnzahl"
+                                                value={formData.kinderAnzahl}
+                                                onChange={handleInputChange}
+                                                className="w-full p-2 border-2 border-blue-100 rounded focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all" />
                                             
-                                            <div className="bg-white p-3 rounded-md shadow-sm border border-blue-100">
-                                                <label className="block mb-3 font-medium text-gray-700">Wird Unterhalt gewährt?</label>
-                                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                                                    <label className={`flex items-center sm:flex-col p-2 border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors duration-200 
-                                                        ${formData.unterhaltArt === 'barunterhalt' ? 'bg-blue-100 border-blue-400' : ''}`}>
-                                                        <div className="flex justify-center items-center sm:mb-2 h-6 mr-2 sm:mr-0">
-                                                            <input
-                                                                type="radio"
-                                                                name="unterhaltArt"
-                                                                value="barunterhalt"
-                                                                checked={formData.unterhaltArt === 'barunterhalt'}
-                                                                onChange={handleInputChange}
-                                                                className="h-4 w-4 text-blue-600 focus:ring-blue-500"
-                                                            />
-                                                        </div>
-                                                        <span className="sm:text-center">Barunterhalt</span>
-                                                    </label>
-                                                    
-                                                    <label className={`flex items-center sm:flex-col p-2 border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors duration-200
-                                                        ${formData.unterhaltArt === 'naturalunterhalt' ? 'bg-blue-100 border-blue-400' : ''}`}>
-                                                        <div className="flex justify-center items-center sm:mb-2 h-6 mr-2 sm:mr-0">
-                                                            <input
-                                                                type="radio"
-                                                                name="unterhaltArt"
-                                                                value="naturalunterhalt"
-                                                                checked={formData.unterhaltArt === 'naturalunterhalt'}
-                                                                onChange={handleInputChange}
-                                                                className="h-4 w-4 text-blue-600 focus:ring-blue-500"
-                                                            />
-                                                        </div>
-                                                        <span className="sm:text-center">Naturalunterhalt</span>
-                                                    </label>
-                                                    
-                                                    <label className={`flex items-center sm:flex-col p-2 border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors duration-200
-                                                        ${formData.unterhaltArt === 'kein' ? 'bg-blue-100 border-blue-400' : ''}`}>
-                                                        <div className="flex justify-center items-center sm:mb-2 h-6 mr-2 sm:mr-0">
-                                                            <input
-                                                                type="radio"
-                                                                name="unterhaltArt"
-                                                                value="kein"
-                                                                checked={formData.unterhaltArt === 'kein'}
-                                                                onChange={handleInputChange}
-                                                                className="h-4 w-4 text-blue-600 focus:ring-blue-500"
-                                                            />
-                                                        </div>
-                                                        <span className="sm:text-center">Kein Unterhalt</span>
-                                                    </label>
-                                                </div>
+                                            <div className="mt-2 text-sm text-gray-600 bg-blue-50 p-2 rounded italic">
+                                                Unterhaltspflichtige Kinder sind minderjährige Kinder oder Kinder in Schule/Ausbildung
                                             </div>
                                         </div>
-                                    )}
-                                </div>
+                                        
+                                        <div className="bg-white p-3 rounded-md shadow-sm border border-blue-100">
+                                            <label className="block mb-3 font-medium text-gray-700">Wird Unterhalt gewährt?</label>
+                                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                                <label className={`flex items-center sm:flex-col p-2 border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors duration-200 
+                                                    ${formData.unterhaltArt === 'barunterhalt' ? 'bg-blue-100 border-blue-400' : ''}`}>
+                                                    <div className="flex justify-center items-center sm:mb-2 h-6 mr-2 sm:mr-0">
+                                                        <input
+                                                            type="radio"
+                                                            name="unterhaltArt"
+                                                            value="barunterhalt"
+                                                            checked={formData.unterhaltArt === 'barunterhalt'}
+                                                            onChange={handleInputChange}
+                                                            className="h-4 w-4 text-blue-600 focus:ring-blue-500"
+                                                        />
+                                                    </div>
+                                                    <span className="sm:text-center">Barunterhalt</span>
+                                                </label>
+                                                
+                                                <label className={`flex items-center sm:flex-col p-2 border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors duration-200
+                                                    ${formData.unterhaltArt === 'naturalunterhalt' ? 'bg-blue-100 border-blue-400' : ''}`}>
+                                                    <div className="flex justify-center items-center sm:mb-2 h-6 mr-2 sm:mr-0">
+                                                        <input
+                                                            type="radio"
+                                                            name="unterhaltArt"
+                                                            value="naturalunterhalt"
+                                                            checked={formData.unterhaltArt === 'naturalunterhalt'}
+                                                            onChange={handleInputChange}
+                                                            className="h-4 w-4 text-blue-600 focus:ring-blue-500"
+                                                        />
+                                                    </div>
+                                                    <span className="sm:text-center">Naturalunterhalt</span>
+                                                </label>
+                                                
+                                                <label className={`flex items-center sm:flex-col p-2 border-2 border-gray-200 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors duration-200
+                                                    ${formData.unterhaltArt === 'kein' ? 'bg-blue-100 border-blue-400' : ''}`}>
+                                                    <div className="flex justify-center items-center sm:mb-2 h-6 mr-2 sm:mr-0">
+                                                        <input
+                                                            type="radio"
+                                                            name="unterhaltArt"
+                                                            value="kein"
+                                                            checked={formData.unterhaltArt === 'kein'}
+                                                            onChange={handleInputChange}
+                                                            className="h-4 w-4 text-blue-600 focus:ring-blue-500"
+                                                        />
+                                                    </div>
+                                                    <span className="sm:text-center">Kein Unterhalt</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
 
-                                {/* Zweite Zeile */}
-                                <div className="md:col-span-2">
-                                    <label className="block mb-2">Straße</label>
-                                    <input
-                                        type="text"
-                                        name="strasse"
-                                        value={formData.strasse}
-                                        onChange={handleInputChange}
-                                        className="w-full p-2 border-[1px] rounded focus:outline-none focus:border-gray-400" />
+                            {/* Adresse */}
+                            <div className="bg-gray-50 p-3 rounded-lg mb-4">
+                                <h3 className="font-medium text-gray-700 mb-4">Adresse</h3>
+                                
+                                <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-4">
+                                    <div className="sm:col-span-3">
+                                        <label className="block mb-2">Straße</label>
+                                        <input
+                                            type="text"
+                                            name="strasse"
+                                            value={formData.strasse}
+                                            onChange={handleInputChange}
+                                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all" />
+                                    </div>
+                                    <div>
+                                        <label className="block mb-2">Hausnummer</label>
+                                        <input
+                                            type="text"
+                                            name="hausnummer"
+                                            value={formData.hausnummer}
+                                            onChange={handleInputChange}
+                                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all" />
+                                    </div>
                                 </div>
-                                <div>
-                                    <label className="block mb-2">Hausnummer</label>
-                                    <input
-                                        type="text"
-                                        name="hausnummer"
-                                        value={formData.hausnummer}
-                                        onChange={handleInputChange}
-                                        className="w-full p-2 border-[1px] rounded focus:outline-none focus:border-gray-400" />
-                                </div>
-
-                                {/* Dritte Zeile */}
-                                <div className="md:col-span-2">
-                                    <label className="block mb-2">Wohnort</label>
-                                    <input
-                                        type="text"
-                                        name="wohnort"
-                                        value={formData.wohnort}
-                                        onChange={handleInputChange}
-                                        className="w-full p-2 border-[1px] rounded focus:outline-none focus:border-gray-400" />
-                                </div>
-                                <div>
-                                    <label className="block mb-2">PLZ</label>
-                                    <input
-                                        type="text"
-                                        name="plz"
-                                        value={formData.plz}
-                                        onChange={handleInputChange}
-                                        className="w-full p-2 border-[1px] rounded focus:outline-none focus:border-gray-400" />
+                                
+                                <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                                    <div className="sm:col-span-3">
+                                        <label className="block mb-2">Wohnort</label>
+                                        <input
+                                            type="text"
+                                            name="wohnort"
+                                            value={formData.wohnort}
+                                            onChange={handleInputChange}
+                                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all" />
+                                    </div>
+                                    <div>
+                                        <label className="block mb-2">PLZ</label>
+                                        <input
+                                            type="text"
+                                            name="plz"
+                                            value={formData.plz}
+                                            onChange={handleInputChange}
+                                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all" />
+                                    </div>
                                 </div>
                             </div>
                         </CardContent>
