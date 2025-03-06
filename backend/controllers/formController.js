@@ -122,17 +122,67 @@ exports.updateForm = async (req, res) => {
                         monatsRate
                     }
                 },
+                unterhalt: {
+                    unterhaltspflicht: updatedForm.unterhaltspflicht || false,
+                    unterhaltArt: updatedForm.unterhaltArt || '',
+                    kinderAnzahl: updatedForm.kinderAnzahl || ''
+                },
+                immobilien: {
+                    vorhanden: updatedForm.immobilien || false,
+                    details: updatedForm.immobilienDetails || '',
+                    ausland: updatedForm.immobilieAusland || false
+                },
+                fahrzeug: {
+                    vorhanden: updatedForm.fahrzeuge || false,
+                    wert: updatedForm.fahrzeugWert || '',
+                    finanziert: updatedForm.fahrzeugFinanziert || false,
+                    kreditsumme: updatedForm.fahrzeugKreditsumme || '',
+                    briefBeiBank: updatedForm.fahrzeugbriefBank || false,
+                    notwendig: updatedForm.fahrzeugNotwendig || false
+                },
+                vermoegen: {
+                    sparbuch: {
+                        vorhanden: updatedForm.sparbuch || false,
+                        wert: updatedForm.sparbuchWert || ''
+                    },
+                    lebensversicherung: {
+                        vorhanden: updatedForm.lebensversicherung || false,
+                        wert: updatedForm.lebensversicherungWert || ''
+                    },
+                    bausparvertrag: {
+                        vorhanden: updatedForm.bausparvertrag || false,
+                        wert: updatedForm.bausparvertragWert || ''
+                    },
+                    rentenversicherung: {
+                        vorhanden: updatedForm.rentenversicherung || false,
+                        wert: updatedForm.rentenversicherungWert || ''
+                    },
+                    weitere: {
+                        vorhanden: updatedForm.weitereVermoegen || false,
+                        details: updatedForm.weitereVermoegenDetails || ''
+                    }
+                },
+                schenkungen: {
+                    anAngehoerige: {
+                        vorhanden: updatedForm.schenkungAngehoerige || false,
+                        details: updatedForm.schenkungAngehoerigeDetails || ''
+                    },
+                    anAndere: {
+                        vorhanden: updatedForm.schenkungAndere || false,
+                        details: updatedForm.schenkungAndereDetails || ''
+                    }
+                },
                 zustellung: {
-                    perPost: updatedForm.zustellungPost,
-                    perEmail: updatedForm.zustellungEmail
+                    perPost: updatedForm.zustellungPost || false,
+                    perEmail: updatedForm.zustellungEmail || false
                 },
                 terminierung: {
-                    bearbeitungStart: updatedForm.bearbeitungStart,
-                    bearbeitungMonat: updatedForm.bearbeitungMonat,
-                    abrechnungStart: updatedForm.abrechnungStart,
-                    abrechnungMonat: updatedForm.abrechnungMonat
+                    bearbeitungStart: updatedForm.bearbeitungStart || '1',
+                    bearbeitungMonat: updatedForm.bearbeitungMonat || '',
+                    abrechnungStart: updatedForm.abrechnungStart || '1',
+                    abrechnungMonat: updatedForm.abrechnungMonat || ''
                 },
-                qualifizierungsStatus: updatedForm.qualifiziert
+                qualifizierungsStatus: updatedForm.qualifiziert || false
             });
             console.log("✅ Daten an make.com gesendet", response.status);
         } catch (makeError) {

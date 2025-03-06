@@ -31,7 +31,8 @@ const formSchema = new mongoose.Schema({
     plz: String,
     kinderAnzahl: String,
     kinderAlter: String,
-    unterhaltspflicht: String,
+    unterhaltspflicht: Boolean,
+    unterhaltArt: String, // 'barunterhalt', 'naturalunterhalt', 'kein'
     unterhaltHoehe: String,
     beschaeftigungsArt: String,
     befristet: Boolean,
@@ -39,12 +40,40 @@ const formSchema = new mongoose.Schema({
     rechtsform: String,
     nettoEinkommen: String,
     zusatzEinkommen: String,
+    
+    // Immobilien
     immobilien: Boolean,
     immobilienDetails: String,
+    immobilieAusland: Boolean,
+    
+    // Vermögenswerte
     bankguthaben: String,
+    sparbuch: Boolean,
+    sparbuchWert: String,
+    lebensversicherung: Boolean,
+    lebensversicherungWert: String,
+    bausparvertrag: Boolean,
+    bausparvertragWert: String,
+    rentenversicherung: Boolean,
+    rentenversicherungWert: String,
+    weitereVermoegen: Boolean,
+    weitereVermoegenDetails: String,
+    
+    // Fahrzeug
     fahrzeuge: Boolean,
     fahrzeugWert: String,
-    lebensversicherung: Boolean,
+    fahrzeugFinanziert: Boolean,
+    fahrzeugKreditsumme: String,
+    fahrzeugbriefBank: Boolean,
+    fahrzeugNotwendig: Boolean,
+    
+    // Schenkungen
+    schenkungAngehoerige: Boolean,
+    schenkungAngehoerigeDetails: String,
+    schenkungAndere: Boolean,
+    schenkungAndereDetails: String,
+    
+    // Sonstiges
     versicherungWert: String,
     sonstigeVermoegen: String,
     gesamtSchulden: String,
