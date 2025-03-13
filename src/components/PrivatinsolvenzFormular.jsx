@@ -33,12 +33,16 @@ const PrivatinsolvenzFormular = () => {
         hausnummer: '',
         wohnort: '',
         plz: '',
+        geburtsdatum: '',
         unterhaltspflicht: false,
         kinderAnzahl: '',
         unterhaltArt: '',
         beschaeftigungsArt: '',
         befristet: false,
         selbststaendig: false,
+        warSelbststaendig: false,
+        erlernterBeruf: '',
+        derzeitigeTaetigkeit: '',
         rechtsform: '',
         nettoEinkommen: '',
         zusatzEinkommen: '',
@@ -297,20 +301,34 @@ const PrivatinsolvenzFormular = () => {
                                 }
                             `}</style>
                             
-                            {/* Familienstand */}
+                            {/* Persönliche Informationen - Familienstand und Geburtsdatum */}
                             <div className="mb-6">
                                 <div className="bg-gray-50 p-3 rounded-lg">
-                                    <label className="block mb-2 font-medium">Familienstand</label>
-                                    <select
-                                        name="familienstand"
-                                        value={formData.familienstand}
-                                        onChange={handleInputChange}
-                                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all">
-                                        <option value="">Bitte wählen</option>
-                                        <option value="ledig">Ledig</option>
-                                        <option value="verheiratet">Verheiratet</option>
-                                        <option value="geschieden">Geschieden</option>
-                                    </select>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block mb-2 font-medium">Familienstand</label>
+                                            <select
+                                                name="familienstand"
+                                                value={formData.familienstand}
+                                                onChange={handleInputChange}
+                                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all">
+                                                <option value="">Bitte wählen</option>
+                                                <option value="ledig">Ledig</option>
+                                                <option value="verheiratet">Verheiratet</option>
+                                                <option value="geschieden">Geschieden</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label className="block mb-2 font-medium">Geburtsdatum</label>
+                                            <input
+                                                type="date"
+                                                name="geburtsdatum"
+                                                value={formData.geburtsdatum}
+                                                onChange={handleInputChange}
+                                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -452,7 +470,32 @@ const PrivatinsolvenzFormular = () => {
                         </CardHeader>
                         <CardContent>
                             <div className="bg-gray-50 p-4 rounded-lg">
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-4">
+                                    <div>
+                                        <label className="block mb-2 font-medium text-gray-700">Erlernter Beruf</label>
+                                        <input
+                                            type="text"
+                                            name="erlernterBeruf"
+                                            value={formData.erlernterBeruf}
+                                            onChange={handleInputChange}
+                                            placeholder="Erlernter Beruf"
+                                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block mb-2 font-medium text-gray-700">Derzeitige Tätigkeit</label>
+                                        <input
+                                            type="text"
+                                            name="derzeitigeTaetigkeit"
+                                            value={formData.derzeitigeTaetigkeit}
+                                            onChange={handleInputChange}
+                                            placeholder="Derzeitige Tätigkeit"
+                                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
+                                        />
+                                    </div>
+                                </div>
+                                
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-4">
                                     <div>
                                         <label className="block mb-2 font-medium text-gray-700">Art der Beschäftigung</label>
                                         <select
@@ -483,6 +526,17 @@ const PrivatinsolvenzFormular = () => {
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+
+                                <div className="flex items-center space-x-2 cursor-pointer mb-4">
+                                    <input
+                                        type="checkbox"
+                                        name="warSelbststaendig"
+                                        checked={formData.warSelbststaendig || false}
+                                        onChange={handleInputChange}
+                                        className="h-5 w-5 text-blue-600"
+                                    />
+                                    <span className="font-medium">War früher selbstständig</span>
                                 </div>
 
                                 {formData.beschaeftigungsArt === 'selbststaendig' && (

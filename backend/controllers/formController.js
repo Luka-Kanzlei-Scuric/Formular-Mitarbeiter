@@ -127,6 +127,15 @@ exports.updateForm = async (req, res) => {
                     unterhaltArt: updatedForm.unterhaltArt || '',
                     kinderAnzahl: updatedForm.kinderAnzahl || ''
                 },
+                persoenlicheDaten: {
+                    geburtsdatum: updatedForm.geburtsdatum || '',
+                    erlernterBeruf: updatedForm.erlernterBeruf || '',
+                    derzeitigeTaetigkeit: updatedForm.derzeitigeTaetigkeit || ''
+                },
+                beruflicheSituation: {
+                    warSelbststaendig: updatedForm.warSelbststaendig || false,
+                    selbststaendig: updatedForm.selbststaendig || false
+                },
                 immobilien: {
                     vorhanden: updatedForm.immobilien || false,
                     details: updatedForm.immobilienDetails || '',

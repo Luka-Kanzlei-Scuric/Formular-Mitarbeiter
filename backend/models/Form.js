@@ -34,9 +34,13 @@ const formSchema = new mongoose.Schema({
     unterhaltspflicht: Boolean,
     unterhaltArt: String, // 'barunterhalt', 'naturalunterhalt', 'kein'
     unterhaltHoehe: String,
+    geburtsdatum: String,
     beschaeftigungsArt: String,
     befristet: Boolean,
     selbststaendig: Boolean,
+    warSelbststaendig: Boolean,
+    erlernterBeruf: String,
+    derzeitigeTaetigkeit: String,
     rechtsform: String,
     nettoEinkommen: String,
     zusatzEinkommen: String,
