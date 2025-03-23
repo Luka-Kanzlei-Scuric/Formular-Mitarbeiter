@@ -94,10 +94,6 @@ const formSchema = new mongoose.Schema({
         type: String,
         default: '1'
     },
-    bearbeitungStart: {
-        type: String,
-        default: '1'
-    },
     bearbeitungMonat: {
         type: String,
         default: ''
@@ -122,6 +118,45 @@ const formSchema = new mongoose.Schema({
         type: String,
         default: ''
     },
+    
+    // Honorarinformation
+    preisKalkulation: {
+        berechnungsart: {
+            type: String,
+            default: 'nach Gläubiger' // 'manuell', 'nach Pfändung', 'nach Gläubiger'
+        },
+        startgebuehr: {
+            type: Number,
+            default: 799
+        },
+        preisProGlaeubiger: {
+            type: Number,
+            default: 39
+        },
+        standardPrice: {
+            type: Number,
+            default: 0
+        },
+        pfandungsPrice: {
+            type: Number,
+            default: 0
+        },
+        gesamtPreis: {
+            type: Number,
+            default: 0
+        },
+        ratenzahlung: {
+            monate: {
+                type: Number,
+                default: 2
+            },
+            monatsRate: {
+                type: Number,
+                default: 0
+            }
+        }
+    },
+    
     notizen: String // Neues Notizfeld
 }, {
     timestamps: true

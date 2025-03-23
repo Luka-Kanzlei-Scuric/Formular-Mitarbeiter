@@ -71,7 +71,7 @@ exports.updateForm = async (req, res) => {
             return res.status(404).json({ message: 'Formular nicht gefunden' });
         }
 
-        // Berechne Preise für make.com
+        // Berechne Preise für make.com und Datenbank
         const startgebuehr = 799;
         const preisProGlaeubiger = 39;
         const anzahlGlaeubiger = parseInt(updatedForm.glaeubiger) || 0;
@@ -102,14 +102,34 @@ exports.updateForm = async (req, res) => {
             : parseInt(updatedForm.ratenzahlungMonate) || 2;
         const monatsRate = gesamtPreis / monate;
 
+        // Speichere die Preiskalkulation im Dokument
+        const berechnungsart = updatedForm.manuellerPreis ? 'manuell' :
+            (pfandungsPrice > standardPrice ? 'nach Pfändung' : 'nach Gläubiger');
+
+        updatedForm.preisKalkulation = {
+            berechnungsart,
+            startgebuehr,
+            preisProGlaeubiger,
+            anzahlGlaeubiger,
+            standardPrice,
+            pfandungsPrice,
+            gesamtPreis,
+            ratenzahlung: {
+                monate,
+                monatsRate
+            }
+        };
+        
+        // Speichere die Änderungen in der Datenbank
+        await updatedForm.save();
+
         // Sende Daten an make.com
         try {
             const makeWebhookUrl = 'https://hook.eu2.make.com/wm49imwg7p08738f392n8pu2hgwwzpac';
             const response = await axios.post(makeWebhookUrl, {
                 ...updatedForm.toObject(),
                 preisKalkulation: {
-                    berechnungsart: updatedForm.manuellerPreis ? 'manuell' :
-                        (pfandungsPrice > standardPrice ? 'nach Pfändung' : 'nach Gläubiger'),
+                    berechnungsart,
                     manuell: updatedForm.manuellerPreis || false,
                     manuellerPreisBetrag: updatedForm.manuellerPreisBetrag || "",
                     manuellerPreisNotiz: updatedForm.manuellerPreisNotiz || "",
