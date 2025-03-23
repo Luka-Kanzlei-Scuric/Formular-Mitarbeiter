@@ -60,6 +60,8 @@ exports.updateForm = async (req, res) => {
     try {
         console.log(`🔄 Update-Request für TaskId ${req.params.taskId}`);
 
+        console.log("Request body:", req.body);
+        
         const updatedForm = await Form.findOneAndUpdate(
             { taskId: req.params.taskId },
             req.body,
@@ -120,6 +122,14 @@ exports.updateForm = async (req, res) => {
             }
         };
         
+        console.log("Berechnete Preise:", { 
+            anzahlGlaeubiger, 
+            standardPrice, 
+            pfandungsPrice, 
+            gesamtPreis, 
+            berechnungsart 
+        });
+        
         // Speichere die Änderungen in der Datenbank
         await updatedForm.save();
 
@@ -136,6 +146,8 @@ exports.updateForm = async (req, res) => {
                     startgebuehr,
                     preisProGlaeubiger,
                     anzahlGlaeubiger,
+                    standardPrice,
+                    pfandungsPrice,
                     gesamtPreis,
                     ratenzahlung: {
                         monate,
