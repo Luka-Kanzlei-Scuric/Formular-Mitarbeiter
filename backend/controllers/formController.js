@@ -13,6 +13,66 @@ exports.getFormByTaskId = async (req, res) => {
             return res.status(404).json({ message: 'Formular nicht gefunden' });
         }
 
+        // Sicherstellen, dass Preise korrekt berechnet sind, wenn sie fehlen oder 0 sind
+        if (!form.preisKalkulation || form.preisKalkulation.gesamtPreis === 0) {
+            // Berechne Preise
+            const startgebuehr = 799;
+            const preisProGlaeubiger = 39;
+            const anzahlGlaeubiger = parseInt(form.glaeubiger) || 0;
+            const standardPrice = startgebuehr + (anzahlGlaeubiger * preisProGlaeubiger);
+
+            // Berechnung des Pfändungspreises
+            const nettoEinkommen = parseFloat(form.nettoEinkommen) || 0;
+            const kinderAnzahl = parseInt(form.kinderAnzahl) || 0;
+            let pfandungsPrice = 0;
+
+            if (nettoEinkommen > 1500) {
+                pfandungsPrice = (nettoEinkommen - 1500) * 0.2;
+                pfandungsPrice = pfandungsPrice * (1 - (kinderAnzahl * 0.05));
+                pfandungsPrice = pfandungsPrice * 3;
+            }
+
+            // Verwende den höheren Preis
+            const gesamtPreis = form.manuellerPreis ?
+                parseFloat(form.manuellerPreisBetrag) || standardPrice :
+                Math.max(standardPrice, pfandungsPrice);
+
+            // Berechne Raten
+            let monate = form.ratenzahlungMonate === 'custom'
+                ? Math.min(Math.max(parseInt(form.benutzerdefinierteMonate) || 1, 1), 12)
+                : parseInt(form.ratenzahlungMonate) || 2;
+            const monatsRate = gesamtPreis / monate;
+
+            // Bestimme Berechnungsart
+            const berechnungsart = form.manuellerPreis ? 'manuell' :
+                (pfandungsPrice > standardPrice ? 'nach Pfändung' : 'nach Gläubiger');
+
+            // Aktualisiere preisKalkulation für die Antwort
+            form.preisKalkulation = {
+                berechnungsart,
+                startgebuehr,
+                preisProGlaeubiger,
+                anzahlGlaeubiger,
+                standardPrice,
+                pfandungsPrice,
+                gesamtPreis,
+                ratenzahlung: {
+                    monate,
+                    monatsRate
+                }
+            };
+
+            console.log("Preise neu berechnet für GET-Anfrage:", {
+                standardPrice,
+                pfandungsPrice,
+                gesamtPreis,
+                berechnungsart
+            });
+
+            // Optional: Speichern der aktualisierten Preisinfos in der Datenbank
+            await form.save();
+        }
+
         console.log("✅ Formular gefunden:", form);
         res.json(form);
     } catch (error) {
