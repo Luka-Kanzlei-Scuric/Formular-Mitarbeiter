@@ -23,53 +23,67 @@ const formSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    // Füge hier alle anderen Felder hinzu:
-    familienstand: String,
+    
+    // 1. Persönliche Daten
+    vorname: String,
+    nachname: String,
+    familienstand: String, // 'verheiratet', 'geschieden', 'getrennt lebend', 'ledig'
     strasse: String,
     hausnummer: String,
     wohnort: String,
     plz: String,
+    geburtsdatum: String,
+    geburtsort: String, // Neu hinzugefügt
     kinderAnzahl: String,
     kinderAlter: String,
     unterhaltspflicht: Boolean,
     unterhaltArt: String, // 'barunterhalt', 'naturalunterhalt', 'kein'
     unterhaltHoehe: String,
-    geburtsdatum: String,
-    beschaeftigungsArt: String,
+    
+    // 2. Einkommensverhältnis
+    beschaeftigungsArt: String, // 'in Arbeit', 'Rentner', 'Arbeitslos', 'Bürgergeld', 'Selbstständig'
     befristet: Boolean,
     selbststaendig: Boolean,
-    warSelbststaendig: Boolean,
-    erlernterBeruf: String,
-    derzeitigeTaetigkeit: String,
-    rechtsform: String,
     nettoEinkommen: String,
+    nebenbeschaeftigung: String, // Neu hinzugefügt
+    nebenbeschaeftigungBemerkung: String, // Neu hinzugefügt
     zusatzEinkommen: String,
+    zusatzEinkommenBemerkung: String, // Neu hinzugefügt
     
+    // 3. Berufserfahrung
+    erlernterBeruf: String,
+    derzeitigeTaetigkeit: String, // Ausgeübter Beruf
+    rechtsform: String,
+    
+    // 4. Sonstige Angaben
+    warSelbststaendig: Boolean,
+    warSelbststaendigBemerkung: String, // Neu hinzugefügt
+    sbGemeldetAbgemeldet: String, // Neu hinzugefügt
+    sbGemeldetAbgemeldetBemerkung: String, // Neu hinzugefügt
+    
+    // 5. Vermögenssituation
     // Immobilien
     immobilien: Boolean,
     immobilienDetails: String,
+    immobilienBemerkung: String, // Neu hinzugefügt
     immobilieAusland: Boolean,
-    
-    // Vermögenswerte
-    bankguthaben: String,
-    sparbuch: Boolean,
-    sparbuchWert: String,
-    lebensversicherung: Boolean,
-    lebensversicherungWert: String,
-    bausparvertrag: Boolean,
-    bausparvertragWert: String,
-    rentenversicherung: Boolean,
-    rentenversicherungWert: String,
-    weitereVermoegen: Boolean,
-    weitereVermoegenDetails: String,
     
     // Fahrzeug
     fahrzeuge: Boolean,
     fahrzeugWert: String,
     fahrzeugFinanziert: Boolean,
+    fahrzeugFinanzierungArt: String, // Neu hinzugefügt - 'Miete', 'Leasing', 'Finanzierung', 'Firmenwagen'
     fahrzeugKreditsumme: String,
     fahrzeugbriefBank: Boolean,
     fahrzeugNotwendig: Boolean,
+    fahrzeugArbeitsweg: Boolean, // Neu hinzugefügt
+    fahrzeugArbeitswegKm: String, // Neu hinzugefügt
+    
+    // Vermögen an Angehörige
+    vermoegenAngehoerige2Jahre: Boolean, // Neu hinzugefügt
+    vermoegenAngehoerige2JahreBetrag: String, // Neu hinzugefügt
+    vermoegenAngehoerige4Jahre: Boolean, // Neu hinzugefügt
+    vermoegenAngehoerige4JahreBetrag: String, // Neu hinzugefügt
     
     // Schenkungen
     schenkungAngehoerige: Boolean,
@@ -77,22 +91,53 @@ const formSchema = new mongoose.Schema({
     schenkungAndere: Boolean,
     schenkungAndereDetails: String,
     
-    // Sonstiges
-    versicherungWert: String,
-    sonstigeVermoegen: String,
+    // Vermögenswerte
+    bankguthaben: String,
+    sparbuch: Boolean,
+    sparbuchWert: String,
+    investDepotGeldanlagen: Boolean, // Neu hinzugefügt
+    investDepotGeldanlagenWert: String, // Neu hinzugefügt
+    lebensversicherung: Boolean,
+    lebensversicherungWert: String,
+    lebensversicherungRueckkaufwert: String, // Neu hinzugefügt
+    bausparvertrag: Boolean,
+    bausparvertragWert: String,
+    bausparvertragRueckkaufwert: String, // Neu hinzugefügt
+    rentenversicherung: Boolean,
+    rentenversicherungWert: String,
+    rentenversicherungRueckkaufwert: String, // Neu hinzugefügt
+    weitereVermoegen: Boolean,
+    weitereVermoegenDetails: String,
+    weitereVermoegenBemerkung: String, // Neu hinzugefügt
+    
+    // 6. Schuldensituation
     gesamtSchulden: String,
+    gesamtSchuldenBemerkung: String, // Neu hinzugefügt
+    hausbank: String, // Neu hinzugefügt
+    dispo: String, // Neu hinzugefügt
+    dispoBemerkung: String, // Neu hinzugefügt
+    pKonto: Boolean, // Neu hinzugefügt
+    pKontoBemerkung: String, // Neu hinzugefügt
+    kontoWechselEmpfohlen: Boolean, // Neu hinzugefügt
+    kontoWechselEmpfohlenBemerkung: String, // Neu hinzugefügt
     glaeubiger: String,
     forderungenOeffentlich: String,
     forderungenPrivat: String,
+    schuldenartInfo: String, // Neu hinzugefügt - 'Privatrechtliche', 'öffentlich rechtlich'
+    schuldenartInfoBemerkung: String, // Neu hinzugefügt
     vorherigeInsolvenz: Boolean,
     insolvenzDatum: String,
+    vorherigeInsolvenzBemerkung: String, // Neu hinzugefügt
     aktuelePfaendung: Boolean,
     pfaendungDetails: String,
-    ratenzahlungMonate: String,
+    
+    // 7. Mandatsinformationen
+    entschuldungsart: String, // Neu hinzugefügt - 'InsO', 'Vergleich'
+    ratenzahlungMonate: String, // '1', '2', '3', '4', '5', '6'
     benutzerdefinierteMonate: String,
     bearbeitungStart: {
         type: String,
-        default: '1'
+        default: '1' // '1', '15'
     },
     bearbeitungMonat: {
         type: String,
@@ -100,7 +145,7 @@ const formSchema = new mongoose.Schema({
     },
     abrechnungStart: {
         type: String,
-        default: '1'
+        default: '1' // '1', '15'
     },
     abrechnungMonat: {
         type: String,

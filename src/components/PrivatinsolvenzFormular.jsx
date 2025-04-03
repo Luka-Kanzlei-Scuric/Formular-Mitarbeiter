@@ -28,55 +28,112 @@ const PrivatinsolvenzFormular = () => {
     const [formData, setFormData] = useState({
         taskId: '',
         leadName: '',
+        // 1. Persönliche Daten
+        vorname: '',
+        nachname: '',
         familienstand: '',
         strasse: '',
         hausnummer: '',
         wohnort: '',
         plz: '',
         geburtsdatum: '',
+        geburtsort: '',
         unterhaltspflicht: false,
         kinderAnzahl: '',
         unterhaltArt: '',
+        
+        // 2. Einkommensverhältnis
         beschaeftigungsArt: '',
         befristet: false,
         selbststaendig: false,
-        warSelbststaendig: false,
+        nettoEinkommen: '',
+        nebenbeschaeftigung: '',
+        nebenbeschaeftigungBemerkung: '',
+        zusatzEinkommen: '',
+        zusatzEinkommenBemerkung: '',
+        
+        // 3. Berufserfahrung
         erlernterBeruf: '',
         derzeitigeTaetigkeit: '',
         rechtsform: '',
-        nettoEinkommen: '',
-        zusatzEinkommen: '',
+        
+        // 4. Sonstige Angaben
+        warSelbststaendig: false,
+        warSelbststaendigBemerkung: '',
+        sbGemeldetAbgemeldet: '',
+        sbGemeldetAbgemeldetBemerkung: '',
+        
+        // 5. Vermögenssituation
+        // Immobilien
         immobilien: false,
         immobilienDetails: '',
+        immobilienBemerkung: '',
         immobilieAusland: false,
-        sparbuch: false,
-        sparbuchWert: '',
-        lebensversicherung: false,
-        lebensversicherungWert: '',
-        bausparvertrag: false,
-        bausparvertragWert: '',
-        rentenversicherung: false,
-        rentenversicherungWert: '',
-        weitereVermoegen: false,
-        weitereVermoegenDetails: '',
+        
+        // Fahrzeug
         fahrzeuge: false,
         fahrzeugWert: '',
         fahrzeugFinanziert: false,
+        fahrzeugFinanzierungArt: '',
         fahrzeugKreditsumme: '',
         fahrzeugbriefBank: false,
         fahrzeugNotwendig: false,
+        fahrzeugArbeitsweg: false,
+        fahrzeugArbeitswegKm: '',
+        
+        // Vermögen an Angehörige
+        vermoegenAngehoerige2Jahre: false,
+        vermoegenAngehoerige2JahreBetrag: '',
+        vermoegenAngehoerige4Jahre: false,
+        vermoegenAngehoerige4JahreBetrag: '',
+        
+        // Schenkungen
         schenkungAngehoerige: false,
         schenkungAngehoerigeDetails: '',
         schenkungAndere: false,
         schenkungAndereDetails: '',
+        
+        // Vermögenswerte
+        sparbuch: false,
+        sparbuchWert: '',
+        investDepotGeldanlagen: false,
+        investDepotGeldanlagenWert: '',
+        lebensversicherung: false,
+        lebensversicherungWert: '',
+        lebensversicherungRueckkaufwert: '',
+        bausparvertrag: false,
+        bausparvertragWert: '',
+        bausparvertragRueckkaufwert: '',
+        rentenversicherung: false,
+        rentenversicherungWert: '',
+        rentenversicherungRueckkaufwert: '',
+        weitereVermoegen: false,
+        weitereVermoegenDetails: '',
+        weitereVermoegenBemerkung: '',
+        
+        // 6. Schuldensituation
         gesamtSchulden: '',
+        gesamtSchuldenBemerkung: '',
+        hausbank: '',
+        dispo: '',
+        dispoBemerkung: '',
+        pKonto: false,
+        pKontoBemerkung: '',
+        kontoWechselEmpfohlen: false,
+        kontoWechselEmpfohlenBemerkung: '',
         glaeubiger: '',
         forderungenOeffentlich: '',
         forderungenPrivat: '',
+        schuldenartInfo: '',
+        schuldenartInfoBemerkung: '',
         vorherigeInsolvenz: false,
         insolvenzDatum: '',
+        vorherigeInsolvenzBemerkung: '',
         aktuelePfaendung: false,
         pfaendungDetails: '',
+        
+        // 7. Mandatsinformationen
+        entschuldungsart: '',
         ratenzahlungMonate: '2',
         benutzerdefinierteMonate: '',
         bearbeitungStart: '1', // Standardwert: 1. des Monats
@@ -301,10 +358,35 @@ const PrivatinsolvenzFormular = () => {
                                 }
                             `}</style>
                             
-                            {/* Persönliche Informationen - Familienstand und Geburtsdatum */}
+                            {/* Persönliche Informationen - Name, Familienstand, Geburtsdatum und Geburtsort */}
                             <div className="mb-6">
                                 <div className="bg-gray-50 p-3 rounded-lg">
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    {/* Name */}
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                                        <div>
+                                            <label className="block mb-2 font-medium">Vorname</label>
+                                            <input
+                                                type="text"
+                                                name="vorname"
+                                                value={formData.vorname}
+                                                onChange={handleInputChange}
+                                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block mb-2 font-medium">Nachname</label>
+                                            <input
+                                                type="text"
+                                                name="nachname"
+                                                value={formData.nachname}
+                                                onChange={handleInputChange}
+                                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Familienstand und Geburtsdatum */}
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                                         <div>
                                             <label className="block mb-2 font-medium">Familienstand</label>
                                             <select
@@ -316,6 +398,7 @@ const PrivatinsolvenzFormular = () => {
                                                 <option value="ledig">Ledig</option>
                                                 <option value="verheiratet">Verheiratet</option>
                                                 <option value="geschieden">Geschieden</option>
+                                                <option value="getrennt lebend">Getrennt lebend</option>
                                             </select>
                                         </div>
                                         <div>
@@ -328,6 +411,18 @@ const PrivatinsolvenzFormular = () => {
                                                 className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
                                             />
                                         </div>
+                                    </div>
+
+                                    {/* Geburtsort */}
+                                    <div>
+                                        <label className="block mb-2 font-medium">Geburtsort</label>
+                                        <input
+                                            type="text"
+                                            name="geburtsort"
+                                            value={formData.geburtsort}
+                                            onChange={handleInputChange}
+                                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -463,41 +558,16 @@ const PrivatinsolvenzFormular = () => {
                         </CardContent>
                     </Card>
 
-                    {/* 3. Berufliche Situation */}
+                    {/* 2. Einkommensverhältnis */}
                     <Card className="mb-6 bg-white shadow-lg hover:shadow-xl transition-shadow">
                         <CardHeader>
-                            <CardTitle>3. Berufliche Situation</CardTitle>
+                            <CardTitle>2. Einkommensverhältnis</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="bg-gray-50 p-4 rounded-lg">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-4">
                                     <div>
-                                        <label className="block mb-2 font-medium text-gray-700">Erlernter Beruf</label>
-                                        <input
-                                            type="text"
-                                            name="erlernterBeruf"
-                                            value={formData.erlernterBeruf}
-                                            onChange={handleInputChange}
-                                            placeholder="Erlernter Beruf"
-                                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block mb-2 font-medium text-gray-700">Derzeitige Tätigkeit</label>
-                                        <input
-                                            type="text"
-                                            name="derzeitigeTaetigkeit"
-                                            value={formData.derzeitigeTaetigkeit}
-                                            onChange={handleInputChange}
-                                            placeholder="Derzeitige Tätigkeit"
-                                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
-                                        />
-                                    </div>
-                                </div>
-                                
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-4">
-                                    <div>
-                                        <label className="block mb-2 font-medium text-gray-700">Art der Beschäftigung</label>
+                                        <label className="block mb-2 font-medium text-gray-700">Arbeitgeber / Status</label>
                                         <select
                                             name="beschaeftigungsArt"
                                             value={formData.beschaeftigungsArt}
@@ -505,9 +575,11 @@ const PrivatinsolvenzFormular = () => {
                                             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
                                         >
                                             <option value="">Bitte wählen</option>
-                                            <option value="angestellt">Angestellt</option>
-                                            <option value="selbststaendig">Selbstständig</option>
-                                            <option value="arbeitslos">Arbeitslos</option>
+                                            <option value="in Arbeit">in Arbeit</option>
+                                            <option value="Rentner">Rentner</option>
+                                            <option value="Arbeitslos">Arbeitslos</option>
+                                            <option value="Bürgergeld">Bürgergeld</option>
+                                            <option value="Selbstständig">Selbstständig</option>
                                         </select>
                                     </div>
                                     <div>
@@ -528,18 +600,54 @@ const PrivatinsolvenzFormular = () => {
                                     </div>
                                 </div>
 
-                                <div className="flex items-center space-x-2 cursor-pointer mb-4">
+                                {/* Nebenbeschäftigung mit Bermerkungsfeld */}
+                                <div className="mb-4">
+                                    <label className="block mb-2 font-medium text-gray-700">Nebenbeschäftigung</label>
                                     <input
-                                        type="checkbox"
-                                        name="warSelbststaendig"
-                                        checked={formData.warSelbststaendig || false}
+                                        type="text"
+                                        name="nebenbeschaeftigung"
+                                        value={formData.nebenbeschaeftigung}
                                         onChange={handleInputChange}
-                                        className="h-5 w-5 text-blue-600"
+                                        placeholder="Nebenbeschäftigung"
+                                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all mb-2"
                                     />
-                                    <span className="font-medium">War früher selbstständig</span>
+                                    <textarea
+                                        name="nebenbeschaeftigungBemerkung"
+                                        value={formData.nebenbeschaeftigungBemerkung}
+                                        onChange={handleInputChange}
+                                        placeholder="Bemerkungen zur Nebenbeschäftigung"
+                                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
+                                        rows="2"
+                                    ></textarea>
                                 </div>
 
-                                {formData.beschaeftigungsArt === 'selbststaendig' && (
+                                {/* Sonstige regelmäßige Einkünfte mit Bermerkungsfeld */}
+                                <div className="mb-4">
+                                    <label className="block mb-2 font-medium text-gray-700">Sonstige regelmäßige Einkünfte</label>
+                                    <div className="relative mb-2">
+                                        <input
+                                            type="number"
+                                            name="zusatzEinkommen"
+                                            value={formData.zusatzEinkommen}
+                                            onChange={handleInputChange}
+                                            placeholder="0,00"
+                                            className="w-full p-3 pl-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all" 
+                                        />
+                                        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                            <span className="text-gray-500">€</span>
+                                        </div>
+                                    </div>
+                                    <textarea
+                                        name="zusatzEinkommenBemerkung"
+                                        value={formData.zusatzEinkommenBemerkung}
+                                        onChange={handleInputChange}
+                                        placeholder="Bemerkungen zu sonstigen Einkünften"
+                                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
+                                        rows="2"
+                                    ></textarea>
+                                </div>
+
+                                {formData.beschaeftigungsArt === 'Selbstständig' && (
                                     <div className="mt-4 bg-red-50 p-4 rounded-lg border border-red-200 animate-fadeIn">
                                         <div className="flex items-start">
                                             <AlertTriangle className="h-5 w-5 text-red-500 mt-0.5" />
@@ -556,13 +664,102 @@ const PrivatinsolvenzFormular = () => {
                         </CardContent>
                     </Card>
 
-                    {/* 4. Vermögenssituation */}
+                    {/* 3. Berufserfahrung */}
                     <Card className="mb-6 bg-white shadow-lg hover:shadow-xl transition-shadow">
                         <CardHeader>
-                            <CardTitle>4. Vermögenssituation</CardTitle>
+                            <CardTitle>3. Berufserfahrung</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="bg-gray-50 p-4 rounded-lg">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-4">
+                                    <div>
+                                        <label className="block mb-2 font-medium text-gray-700">Erlernter Beruf</label>
+                                        <input
+                                            type="text"
+                                            name="erlernterBeruf"
+                                            value={formData.erlernterBeruf}
+                                            onChange={handleInputChange}
+                                            placeholder="Erlernter Beruf"
+                                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block mb-2 font-medium text-gray-700">Ausgeübter Beruf</label>
+                                        <input
+                                            type="text"
+                                            name="derzeitigeTaetigkeit"
+                                            value={formData.derzeitigeTaetigkeit}
+                                            onChange={handleInputChange}
+                                            placeholder="Ausgeübter Beruf"
+                                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* 4. Sonstige Angaben */}
+                    <Card className="mb-6 bg-white shadow-lg hover:shadow-xl transition-shadow">
+                        <CardHeader>
+                            <CardTitle>4. Sonstige Angaben</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="bg-gray-50 p-4 rounded-lg">
+                                <div className="mb-4">
+                                    <div className="flex items-center space-x-2 cursor-pointer mb-2">
+                                        <input
+                                            type="checkbox"
+                                            name="warSelbststaendig"
+                                            checked={formData.warSelbststaendig || false}
+                                            onChange={handleInputChange}
+                                            className="h-5 w-5 text-blue-600"
+                                        />
+                                        <span className="font-medium">Früher Selbstständig</span>
+                                    </div>
+                                    {formData.warSelbststaendig && (
+                                        <textarea
+                                            name="warSelbststaendigBemerkung"
+                                            value={formData.warSelbststaendigBemerkung}
+                                            onChange={handleInputChange}
+                                            placeholder="Details zur früheren Selbstständigkeit"
+                                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
+                                            rows="2"
+                                        ></textarea>
+                                    )}
+                                </div>
+
+                                <div>
+                                    <label className="block mb-2 font-medium text-gray-700">SB gemeldet/abgemeldet</label>
+                                    <input
+                                        type="text"
+                                        name="sbGemeldetAbgemeldet"
+                                        value={formData.sbGemeldetAbgemeldet}
+                                        onChange={handleInputChange}
+                                        placeholder="SB gemeldet/abgemeldet"
+                                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all mb-2"
+                                    />
+                                    <textarea
+                                        name="sbGemeldetAbgemeldetBemerkung"
+                                        value={formData.sbGemeldetAbgemeldetBemerkung}
+                                        onChange={handleInputChange}
+                                        placeholder="Bemerkungen zur SB Meldung/Abmeldung"
+                                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
+                                        rows="2"
+                                    ></textarea>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* 5. Vermögenssituation */}
+                    <Card className="mb-6 bg-white shadow-lg hover:shadow-xl transition-shadow">
+                        <CardHeader>
+                            <CardTitle>5. Vermögenssituation</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-4">
+                                {/* Immobilien */}
                                 <div>
                                     <label className="flex items-center space-x-2">
                                         <input
@@ -572,7 +769,7 @@ const PrivatinsolvenzFormular = () => {
                                             onChange={handleInputChange}
                                             className="h-4 w-4"
                                         />
-                                        <span>Immobilienbesitz vorhanden</span>
+                                        <span>Immobilienbesitz / Wohneigentum</span>
                                     </label>
                                     {formData.immobilien && (
                                         <div className="pl-6 space-y-3 mt-2">
@@ -584,6 +781,15 @@ const PrivatinsolvenzFormular = () => {
                                                 placeholder="Details zum Immobilienbesitz"
                                                 className="w-full p-2 border rounded"
                                             />
+                                            
+                                            <textarea
+                                                name="immobilienBemerkung"
+                                                value={formData.immobilienBemerkung}
+                                                onChange={handleInputChange}
+                                                placeholder="Bemerkungen zum Immobilienbesitz"
+                                                className="w-full p-2 border rounded"
+                                                rows="2"
+                                            ></textarea>
                                             
                                             <label className="flex items-center space-x-2">
                                                 <input
@@ -607,6 +813,8 @@ const PrivatinsolvenzFormular = () => {
                                         </div>
                                     )}
                                 </div>
+
+                                {/* Fahrzeug */}
                                 <div>
                                     <label className="flex items-center space-x-2">
                                         <input
@@ -616,7 +824,7 @@ const PrivatinsolvenzFormular = () => {
                                             onChange={handleInputChange}
                                             className="h-4 w-4"
                                         />
-                                        <span>Fahrzeug (Auto) vorhanden</span>
+                                        <span>Auto/Fahrzeug vorhanden</span>
                                     </label>
                                     {formData.fahrzeuge && (
                                         <div className="pl-6 space-y-3 mt-2">
@@ -625,34 +833,50 @@ const PrivatinsolvenzFormular = () => {
                                                 name="fahrzeugWert"
                                                 value={formData.fahrzeugWert || ''}
                                                 onChange={handleInputChange}
-                                                placeholder="Wert/Details zum Fahrzeug*"
-                                                required
+                                                placeholder="Fahrzeugwert"
                                                 className="w-full p-2 border rounded focus:outline-none focus:ring-1 focus:ring-gray-400"
                                             />
                                             
                                             <div>
-                                                <label className="flex items-center space-x-2">
-                                                    <input
-                                                        type="checkbox"
-                                                        name="fahrzeugFinanziert"
-                                                        checked={formData.fahrzeugFinanziert || false}
-                                                        onChange={handleInputChange}
-                                                        className="h-4 w-4"
-                                                    />
-                                                    <span>Finanziert</span>
-                                                </label>
-                                                {formData.fahrzeugFinanziert && (
-                                                    <input
-                                                        type="text"
-                                                        name="fahrzeugKreditsumme"
-                                                        value={formData.fahrzeugKreditsumme || ''}
-                                                        onChange={handleInputChange}
-                                                        placeholder="Offene Kreditsumme*"
-                                                        required
-                                                        className="w-full mt-2 p-2 border rounded focus:outline-none focus:ring-1 focus:ring-gray-400"
-                                                    />
-                                                )}
+                                                <label className="block mb-2 font-medium">Fahrzeugfinanzierung/Haltung</label>
+                                                <select
+                                                    name="fahrzeugFinanzierungArt"
+                                                    value={formData.fahrzeugFinanzierungArt}
+                                                    onChange={handleInputChange}
+                                                    className="w-full p-2 border rounded focus:outline-none focus:ring-1 focus:ring-gray-400"
+                                                >
+                                                    <option value="">Bitte wählen</option>
+                                                    <option value="Miete">Miete</option>
+                                                    <option value="Leasing">Leasing</option>
+                                                    <option value="Finanzierung">Finanzierung</option>
+                                                    <option value="Firmenwagen">Firmenwagen</option>
+                                                </select>
                                             </div>
+                                            
+                                            {(formData.fahrzeugFinanzierungArt === 'Finanzierung' || formData.fahrzeugFinanzierungArt === 'Leasing') && (
+                                                <div>
+                                                    <label className="flex items-center space-x-2">
+                                                        <input
+                                                            type="checkbox"
+                                                            name="fahrzeugFinanziert"
+                                                            checked={formData.fahrzeugFinanziert || false}
+                                                            onChange={handleInputChange}
+                                                            className="h-4 w-4"
+                                                        />
+                                                        <span>Finanziert</span>
+                                                    </label>
+                                                    {formData.fahrzeugFinanziert && (
+                                                        <input
+                                                            type="text"
+                                                            name="fahrzeugKreditsumme"
+                                                            value={formData.fahrzeugKreditsumme || ''}
+                                                            onChange={handleInputChange}
+                                                            placeholder="Offene Kreditsumme"
+                                                            className="w-full mt-2 p-2 border rounded focus:outline-none focus:ring-1 focus:ring-gray-400"
+                                                        />
+                                                    )}
+                                                </div>
+                                            )}
                                             
                                             {formData.fahrzeugFinanziert && (
                                                 <label className="flex items-center space-x-2">
@@ -667,18 +891,30 @@ const PrivatinsolvenzFormular = () => {
                                                 </label>
                                             )}
                                             
-                                            <label className="flex items-center space-x-2">
-                                                <input
-                                                    type="checkbox"
-                                                    name="fahrzeugNotwendig"
-                                                    checked={formData.fahrzeugNotwendig || false}
-                                                    onChange={handleInputChange}
-                                                    className="h-4 w-4"
-                                                />
-                                                <span>Wird für Arbeitsweg benötigt (öffentliche Verkehrsmittel > 60 min)</span>
-                                            </label>
+                                            <div>
+                                                <label className="flex items-center space-x-2">
+                                                    <input
+                                                        type="checkbox"
+                                                        name="fahrzeugArbeitsweg"
+                                                        checked={formData.fahrzeugArbeitsweg || false}
+                                                        onChange={handleInputChange}
+                                                        className="h-4 w-4"
+                                                    />
+                                                    <span>Fahrzeug Nutzung für Arbeit</span>
+                                                </label>
+                                                {formData.fahrzeugArbeitsweg && (
+                                                    <input
+                                                        type="text"
+                                                        name="fahrzeugArbeitswegKm"
+                                                        value={formData.fahrzeugArbeitswegKm || ''}
+                                                        onChange={handleInputChange}
+                                                        placeholder="Anzahl KM"
+                                                        className="w-full mt-2 ml-6 p-2 border rounded focus:outline-none focus:ring-1 focus:ring-gray-400"
+                                                    />
+                                                )}
+                                            </div>
                                             
-                                            {formData.fahrzeugNotwendig && (
+                                            {formData.fahrzeugArbeitsweg && (
                                                 <Alert className="mt-1">
                                                     <AlertDescription>
                                                         Hinweis: Auto ist nicht pfändbar, wenn der Weg mit öffentlichen Verkehrsmitteln länger als 60 Minuten dauern würde.
@@ -689,7 +925,60 @@ const PrivatinsolvenzFormular = () => {
                                     )}
                                 </div>
 
+                                {/* Vermögen an Angehörige */}
                                 <div className="pt-4">
+                                    <h3 className="font-medium mb-3">Vermögen an Angehörige</h3>
+                                    <div className="space-y-4 pl-2">
+                                        <div>
+                                            <label className="flex items-center space-x-2">
+                                                <input
+                                                    type="checkbox"
+                                                    name="vermoegenAngehoerige2Jahre"
+                                                    checked={formData.vermoegenAngehoerige2Jahre || false}
+                                                    onChange={handleInputChange}
+                                                    className="h-4 w-4"
+                                                />
+                                                <span>Vermögen an Angehörige in 2 Jahren gezahlt</span>
+                                            </label>
+                                            {formData.vermoegenAngehoerige2Jahre && (
+                                                <input
+                                                    type="text"
+                                                    name="vermoegenAngehoerige2JahreBetrag"
+                                                    value={formData.vermoegenAngehoerige2JahreBetrag || ''}
+                                                    onChange={handleInputChange}
+                                                    placeholder="Betrag in Euro"
+                                                    className="w-full mt-2 ml-6 p-2 border rounded"
+                                                />
+                                            )}
+                                        </div>
+                                        
+                                        <div>
+                                            <label className="flex items-center space-x-2">
+                                                <input
+                                                    type="checkbox"
+                                                    name="vermoegenAngehoerige4Jahre"
+                                                    checked={formData.vermoegenAngehoerige4Jahre || false}
+                                                    onChange={handleInputChange}
+                                                    className="h-4 w-4"
+                                                />
+                                                <span>Vermögen an Angehörige i.d.l. 4 Jahren gezahlt</span>
+                                            </label>
+                                            {formData.vermoegenAngehoerige4Jahre && (
+                                                <input
+                                                    type="text"
+                                                    name="vermoegenAngehoerige4JahreBetrag"
+                                                    value={formData.vermoegenAngehoerige4JahreBetrag || ''}
+                                                    onChange={handleInputChange}
+                                                    placeholder="Betrag in Euro"
+                                                    className="w-full mt-2 ml-6 p-2 border rounded"
+                                                />
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Schenkungen (alte Implementierung) */}
+                                <div className="hidden">
                                     <label className="flex items-center space-x-2">
                                         <input
                                             type="checkbox"
@@ -721,7 +1010,7 @@ const PrivatinsolvenzFormular = () => {
                                     )}
                                 </div>
 
-                                <div>
+                                <div className="hidden">
                                     <label className="flex items-center space-x-2">
                                         <input
                                             type="checkbox"
@@ -752,8 +1041,9 @@ const PrivatinsolvenzFormular = () => {
                                     )}
                                 </div>
 
+                                {/* Vermögenswerte */}
                                 <div className="pt-4">
-                                    <h3 className="font-medium mb-3">Vermögen</h3>
+                                    <h3 className="font-medium mb-3">Vermögenswerte</h3>
                                     <div className="space-y-4 pl-2">
                                         <div>
                                             <label className="flex items-center space-x-2">
@@ -764,13 +1054,36 @@ const PrivatinsolvenzFormular = () => {
                                                     onChange={handleInputChange}
                                                     className="h-4 w-4"
                                                 />
-                                                <span>Sparbuch</span>
+                                                <span>Sparbuch/Bargeld</span>
                                             </label>
                                             {formData.sparbuch && (
                                                 <input
                                                     type="text"
                                                     name="sparbuchWert"
                                                     value={formData.sparbuchWert || ''}
+                                                    onChange={handleInputChange}
+                                                    placeholder="Wert/Details"
+                                                    className="w-full mt-2 ml-6 p-2 border rounded"
+                                                />
+                                            )}
+                                        </div>
+                                        
+                                        <div>
+                                            <label className="flex items-center space-x-2">
+                                                <input
+                                                    type="checkbox"
+                                                    name="investDepotGeldanlagen"
+                                                    checked={formData.investDepotGeldanlagen || false}
+                                                    onChange={handleInputChange}
+                                                    className="h-4 w-4"
+                                                />
+                                                <span>Invest/Depot/Bitcoin/Geldanlagen</span>
+                                            </label>
+                                            {formData.investDepotGeldanlagen && (
+                                                <input
+                                                    type="text"
+                                                    name="investDepotGeldanlagenWert"
+                                                    value={formData.investDepotGeldanlagenWert || ''}
                                                     onChange={handleInputChange}
                                                     placeholder="Wert/Details"
                                                     className="w-full mt-2 ml-6 p-2 border rounded"
@@ -790,14 +1103,24 @@ const PrivatinsolvenzFormular = () => {
                                                 <span>Lebensversicherung</span>
                                             </label>
                                             {formData.lebensversicherung && (
-                                                <input
-                                                    type="text"
-                                                    name="lebensversicherungWert"
-                                                    value={formData.lebensversicherungWert || ''}
-                                                    onChange={handleInputChange}
-                                                    placeholder="Wert/Details"
-                                                    className="w-full mt-2 ml-6 p-2 border rounded"
-                                                />
+                                                <div className="space-y-2 mt-2 ml-6">
+                                                    <input
+                                                        type="text"
+                                                        name="lebensversicherungWert"
+                                                        value={formData.lebensversicherungWert || ''}
+                                                        onChange={handleInputChange}
+                                                        placeholder="Wert/Details"
+                                                        className="w-full p-2 border rounded"
+                                                    />
+                                                    <input
+                                                        type="text"
+                                                        name="lebensversicherungRueckkaufwert"
+                                                        value={formData.lebensversicherungRueckkaufwert || ''}
+                                                        onChange={handleInputChange}
+                                                        placeholder="Rückkaufwert/aktueller Wert"
+                                                        className="w-full p-2 border rounded"
+                                                    />
+                                                </div>
                                             )}
                                         </div>
                                         
@@ -813,14 +1136,24 @@ const PrivatinsolvenzFormular = () => {
                                                 <span>Bausparvertrag</span>
                                             </label>
                                             {formData.bausparvertrag && (
-                                                <input
-                                                    type="text"
-                                                    name="bausparvertragWert"
-                                                    value={formData.bausparvertragWert || ''}
-                                                    onChange={handleInputChange}
-                                                    placeholder="Wert/Details"
-                                                    className="w-full mt-2 ml-6 p-2 border rounded"
-                                                />
+                                                <div className="space-y-2 mt-2 ml-6">
+                                                    <input
+                                                        type="text"
+                                                        name="bausparvertragWert"
+                                                        value={formData.bausparvertragWert || ''}
+                                                        onChange={handleInputChange}
+                                                        placeholder="Wert/Details"
+                                                        className="w-full p-2 border rounded"
+                                                    />
+                                                    <input
+                                                        type="text"
+                                                        name="bausparvertragRueckkaufwert"
+                                                        value={formData.bausparvertragRueckkaufwert || ''}
+                                                        onChange={handleInputChange}
+                                                        placeholder="Rückkaufwert/aktueller Wert"
+                                                        className="w-full p-2 border rounded"
+                                                    />
+                                                </div>
                                             )}
                                         </div>
                                         
@@ -833,17 +1166,27 @@ const PrivatinsolvenzFormular = () => {
                                                     onChange={handleInputChange}
                                                     className="h-4 w-4"
                                                 />
-                                                <span>Rentenversicherung</span>
+                                                <span>Rentenzusatzversicherung</span>
                                             </label>
                                             {formData.rentenversicherung && (
-                                                <input
-                                                    type="text"
-                                                    name="rentenversicherungWert"
-                                                    value={formData.rentenversicherungWert || ''}
-                                                    onChange={handleInputChange}
-                                                    placeholder="Wert/Details"
-                                                    className="w-full mt-2 ml-6 p-2 border rounded"
-                                                />
+                                                <div className="space-y-2 mt-2 ml-6">
+                                                    <input
+                                                        type="text"
+                                                        name="rentenversicherungWert"
+                                                        value={formData.rentenversicherungWert || ''}
+                                                        onChange={handleInputChange}
+                                                        placeholder="Wert/Details"
+                                                        className="w-full p-2 border rounded"
+                                                    />
+                                                    <input
+                                                        type="text"
+                                                        name="rentenversicherungRueckkaufwert"
+                                                        value={formData.rentenversicherungRueckkaufwert || ''}
+                                                        onChange={handleInputChange}
+                                                        placeholder="Rückkaufwert/aktueller Wert"
+                                                        className="w-full p-2 border rounded"
+                                                    />
+                                                </div>
                                             )}
                                         </div>
                                         
@@ -859,14 +1202,24 @@ const PrivatinsolvenzFormular = () => {
                                                 <span>Weitere Vermögenswerte</span>
                                             </label>
                                             {formData.weitereVermoegen && (
-                                                <input
-                                                    type="text"
-                                                    name="weitereVermoegenDetails"
-                                                    value={formData.weitereVermoegenDetails || ''}
-                                                    onChange={handleInputChange}
-                                                    placeholder="Details zu weiteren Vermögenswerten"
-                                                    className="w-full mt-2 ml-6 p-2 border rounded"
-                                                />
+                                                <div className="space-y-2 mt-2 ml-6">
+                                                    <input
+                                                        type="text"
+                                                        name="weitereVermoegenDetails"
+                                                        value={formData.weitereVermoegenDetails || ''}
+                                                        onChange={handleInputChange}
+                                                        placeholder="Details zu weiteren Vermögenswerten"
+                                                        className="w-full p-2 border rounded"
+                                                    />
+                                                    <textarea
+                                                        name="weitereVermoegenBemerkung"
+                                                        value={formData.weitereVermoegenBemerkung || ''}
+                                                        onChange={handleInputChange}
+                                                        placeholder="Bemerkungen zu weiteren Vermögenswerten"
+                                                        className="w-full p-2 border rounded"
+                                                        rows="2"
+                                                    ></textarea>
+                                                </div>
                                             )}
                                         </div>
                                     </div>
@@ -875,43 +1228,164 @@ const PrivatinsolvenzFormular = () => {
                         </CardContent>
                     </Card>
 
-                    {/* 5. Schuldensituation */}
+                    {/* 6. Schuldensituation */}
                     <Card className="mb-6 bg-white shadow-lg hover:shadow-xl transition-shadow">
                         <CardHeader>
-                            <CardTitle>5. Schuldensituation</CardTitle>
+                            <CardTitle>6. Schuldensituation</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="bg-gray-50 p-4 rounded-lg">
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-5">
-                                    <div>
-                                        <label className="block mb-2 font-medium text-gray-700">Gesamtschuldenhöhe</label>
-                                        <div className="relative">
+                                <div className="mb-5">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-5">
+                                        <div>
+                                            <label className="block mb-2 font-medium text-gray-700">Gesamtschuldenhöhe</label>
+                                            <div className="relative">
+                                                <input
+                                                    type="number"
+                                                    name="gesamtSchulden"
+                                                    value={formData.gesamtSchulden}
+                                                    onChange={handleInputChange}
+                                                    placeholder="0,00"
+                                                    className="w-full p-3 pl-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all" 
+                                                />
+                                                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                                    <span className="text-gray-500">€</span>
+                                                </div>
+                                            </div>
+                                            <textarea
+                                                name="gesamtSchuldenBemerkung"
+                                                value={formData.gesamtSchuldenBemerkung || ''}
+                                                onChange={handleInputChange}
+                                                placeholder="Bemerkungen zur Gesamtschuldenhöhe"
+                                                className="w-full mt-2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
+                                                rows="2"
+                                            ></textarea>
+                                        </div>
+                                        <div>
+                                            <label className="block mb-2 font-medium text-gray-700">Anzahl Gläubiger</label>
                                             <input
                                                 type="number"
-                                                name="gesamtSchulden"
-                                                value={formData.gesamtSchulden}
+                                                name="glaeubiger"
+                                                value={formData.glaeubiger}
                                                 onChange={handleInputChange}
-                                                placeholder="0,00"
-                                                className="w-full p-3 pl-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all" 
+                                                placeholder="0"
+                                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all" 
                                             />
-                                            <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                                <span className="text-gray-500">€</span>
-                                            </div>
                                         </div>
                                     </div>
-                                    <div>
-                                        <label className="block mb-2 font-medium text-gray-700">Anzahl Gläubiger</label>
-                                        <input
-                                            type="number"
-                                            name="glaeubiger"
-                                            value={formData.glaeubiger}
+
+                                    {/* Hausbank und Dispo */}
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-5">
+                                        <div>
+                                            <label className="block mb-2 font-medium text-gray-700">Hausbank</label>
+                                            <input
+                                                type="text"
+                                                name="hausbank"
+                                                value={formData.hausbank}
+                                                onChange={handleInputChange}
+                                                placeholder="Name der Hausbank"
+                                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all" 
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block mb-2 font-medium text-gray-700">Dispo</label>
+                                            <div className="relative">
+                                                <input
+                                                    type="number"
+                                                    name="dispo"
+                                                    value={formData.dispo}
+                                                    onChange={handleInputChange}
+                                                    placeholder="0,00"
+                                                    className="w-full p-3 pl-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all" 
+                                                />
+                                                <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                                    <span className="text-gray-500">€</span>
+                                                </div>
+                                            </div>
+                                            <textarea
+                                                name="dispoBemerkung"
+                                                value={formData.dispoBemerkung || ''}
+                                                onChange={handleInputChange}
+                                                placeholder="Bemerkungen zum Dispo"
+                                                className="w-full mt-2 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
+                                                rows="2"
+                                            ></textarea>
+                                        </div>
+                                    </div>
+
+                                    {/* P-Konto und Kontowechsel */}
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-5">
+                                        <div>
+                                            <div className="flex items-center space-x-2 cursor-pointer mb-2">
+                                                <input
+                                                    type="checkbox"
+                                                    name="pKonto"
+                                                    checked={formData.pKonto || false}
+                                                    onChange={handleInputChange}
+                                                    className="h-5 w-5 text-blue-600"
+                                                />
+                                                <span className="font-medium">P-Konto vorhanden</span>
+                                            </div>
+                                            {formData.pKonto && (
+                                                <textarea
+                                                    name="pKontoBemerkung"
+                                                    value={formData.pKontoBemerkung || ''}
+                                                    onChange={handleInputChange}
+                                                    placeholder="Bemerkungen zum P-Konto"
+                                                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
+                                                    rows="2"
+                                                ></textarea>
+                                            )}
+                                        </div>
+                                        <div>
+                                            <div className="flex items-center space-x-2 cursor-pointer mb-2">
+                                                <input
+                                                    type="checkbox"
+                                                    name="kontoWechselEmpfohlen"
+                                                    checked={formData.kontoWechselEmpfohlen || false}
+                                                    onChange={handleInputChange}
+                                                    className="h-5 w-5 text-blue-600"
+                                                />
+                                                <span className="font-medium">Kontowechsel empfohlen</span>
+                                            </div>
+                                            {formData.kontoWechselEmpfohlen && (
+                                                <textarea
+                                                    name="kontoWechselEmpfohlenBemerkung"
+                                                    value={formData.kontoWechselEmpfohlenBemerkung || ''}
+                                                    onChange={handleInputChange}
+                                                    placeholder="Begründung für Kontowechsel"
+                                                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
+                                                    rows="2"
+                                                ></textarea>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Schuldenart */}
+                                    <div className="mb-5">
+                                        <label className="block mb-2 font-medium text-gray-700">Kurzinfo zu GLB/ Schuldenart</label>
+                                        <select
+                                            name="schuldenartInfo"
+                                            value={formData.schuldenartInfo}
                                             onChange={handleInputChange}
-                                            placeholder="0"
-                                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all" 
-                                        />
+                                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all mb-2"
+                                        >
+                                            <option value="">Bitte wählen</option>
+                                            <option value="Privatrechtliche">Privatrechtliche</option>
+                                            <option value="öffentlich rechtlich">öffentlich rechtlich</option>
+                                        </select>
+                                        <textarea
+                                            name="schuldenartInfoBemerkung"
+                                            value={formData.schuldenartInfoBemerkung || ''}
+                                            onChange={handleInputChange}
+                                            placeholder="Bemerkungen zur Schuldenart"
+                                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
+                                            rows="2"
+                                        ></textarea>
                                     </div>
                                 </div>
                                 
+                                {/* Vorherige Insolvenz */}
                                 <div className="bg-white p-4 rounded-lg border border-gray-200">
                                     <label className="flex items-center space-x-2 cursor-pointer">
                                         <input
@@ -925,16 +1399,26 @@ const PrivatinsolvenzFormular = () => {
                                     </label>
                                     
                                     {formData.vorherigeInsolvenz && (
-                                        <div className="mt-3 bg-red-50 p-4 rounded-lg border border-red-200 animate-fadeIn">
-                                            <div className="flex items-start">
-                                                <AlertTriangle className="h-5 w-5 text-red-500 mt-0.5" />
-                                                <div className="ml-3">
-                                                    <h4 className="text-sm font-medium text-red-800">Kritischer Hinweis</h4>
-                                                    <p className="mt-1 text-sm text-red-700">
-                                                        ACHTUNG: Die 10-Jahres-Sperrfrist muss unbedingt beachtet werden!
-                                                    </p>
+                                        <div className="space-y-3 mt-3">
+                                            <div className="bg-red-50 p-4 rounded-lg border border-red-200 animate-fadeIn">
+                                                <div className="flex items-start">
+                                                    <AlertTriangle className="h-5 w-5 text-red-500 mt-0.5" />
+                                                    <div className="ml-3">
+                                                        <h4 className="text-sm font-medium text-red-800">Kritischer Hinweis</h4>
+                                                        <p className="mt-1 text-sm text-red-700">
+                                                            ACHTUNG: Die 10-Jahres-Sperrfrist muss unbedingt beachtet werden!
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             </div>
+                                            <textarea
+                                                name="vorherigeInsolvenzBemerkung"
+                                                value={formData.vorherigeInsolvenzBemerkung || ''}
+                                                onChange={handleInputChange}
+                                                placeholder="Details zur vorherigen Insolvenz"
+                                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
+                                                rows="2"
+                                            ></textarea>
                                         </div>
                                     )}
                                 </div>
@@ -1040,13 +1524,129 @@ const PrivatinsolvenzFormular = () => {
                         </CardContent>
                     </Card>
 
-                    {/* 7. Preiskalkulation als letzter Abschnitt */}
+                    {/* 7. Mandatsinformationen */}
                     <Card className="mb-6 bg-white shadow-lg hover:shadow-xl transition-shadow">
                         <CardHeader>
-                            <CardTitle>7. Preiskalkulation & Zahlungsoptionen</CardTitle>
+                            <CardTitle>7. Mandatsinformationen</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-6">
+                                {/* Art der Entschuldung */}
+                                <div className="bg-gray-50 p-4 rounded-lg">
+                                    <h3 className="font-medium mb-3">Art der Entschuldung</h3>
+                                    <div className="flex space-x-4">
+                                        <label className="flex items-center space-x-2 cursor-pointer">
+                                            <div className="p-2">
+                                                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
+                                                    ${formData.entschuldungsart === 'InsO' ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
+                                                    onClick={() => setFormData(prev => ({
+                                                        ...prev,
+                                                        entschuldungsart: 'InsO'
+                                                    }))}
+                                                >
+                                                    {formData.entschuldungsart === 'InsO' && (
+                                                        <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <span>InsO</span>
+                                        </label>
+
+                                        <label className="flex items-center space-x-2 cursor-pointer">
+                                            <div className="p-2">
+                                                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
+                                                    ${formData.entschuldungsart === 'Vergleich' ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
+                                                    onClick={() => setFormData(prev => ({
+                                                        ...prev,
+                                                        entschuldungsart: 'Vergleich'
+                                                    }))}
+                                                >
+                                                    {formData.entschuldungsart === 'Vergleich' && (
+                                                        <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <span>Vergleich</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                {/* Start der Entschuldung */}
+                                <div className="bg-gray-50 p-4 rounded-lg">
+                                    <h3 className="font-medium mb-3">Start der Entschuldung</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block mb-2">Tag</label>
+                                            <div className="flex items-center gap-8">
+                                                <label className="flex items-center space-x-2 cursor-pointer">
+                                                    <div className="p-3">
+                                                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
+                                                            ${formData.bearbeitungStart === '1' ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
+                                                            onClick={() => setFormData(prev => ({
+                                                                ...prev,
+                                                                bearbeitungStart: '1'
+                                                            }))}
+                                                        >
+                                                            {formData.bearbeitungStart === '1' && (
+                                                                <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                                </svg>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                    <span>zum 01.</span>
+                                                </label>
+
+                                                <label className="flex items-center space-x-2 cursor-pointer">
+                                                    <div className="p-3">
+                                                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
+                                                            ${formData.bearbeitungStart === '15' ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
+                                                            onClick={() => setFormData(prev => ({
+                                                                ...prev,
+                                                                bearbeitungStart: '15'
+                                                            }))}
+                                                        >
+                                                            {formData.bearbeitungStart === '15' && (
+                                                                <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                                </svg>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                    <span>zum 15.</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block mb-2">Monat</label>
+                                            <select
+                                                name="bearbeitungMonat"
+                                                value={formData.bearbeitungMonat || ''}
+                                                onChange={handleInputChange}
+                                                className="w-full p-2 border-[1px] rounded focus:outline-none focus:border-gray-400"
+                                            >
+                                                <option value="">Aktueller Monat</option>
+                                                <option value="1">Januar</option>
+                                                <option value="2">Februar</option>
+                                                <option value="3">März</option>
+                                                <option value="4">April</option>
+                                                <option value="5">Mai</option>
+                                                <option value="6">Juni</option>
+                                                <option value="7">Juli</option>
+                                                <option value="8">August</option>
+                                                <option value="9">September</option>
+                                                <option value="10">Oktober</option>
+                                                <option value="11">November</option>
+                                                <option value="12">Dezember</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 {/* Preisberechnungsmodus Auswahl */}
                                 <div className="mb-4">
                                     <h3 className="font-medium mb-3">Berechnungsmodus</h3>
@@ -1054,7 +1654,7 @@ const PrivatinsolvenzFormular = () => {
                                         <label className="flex items-center space-x-2 cursor-pointer">
                                             <div className="p-2">
                                                 <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
-                            ${!formData.manuellerPreis ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
+                                                    ${!formData.manuellerPreis ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
                                                     onClick={() => setFormData(prev => ({
                                                         ...prev,
                                                         manuellerPreis: false
@@ -1073,7 +1673,7 @@ const PrivatinsolvenzFormular = () => {
                                         <label className="flex items-center space-x-2 cursor-pointer">
                                             <div className="p-2">
                                                 <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
-                            ${formData.manuellerPreis ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
+                                                    ${formData.manuellerPreis ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
                                                     onClick={() => setFormData(prev => ({
                                                         ...prev,
                                                         manuellerPreis: true
@@ -1159,26 +1759,29 @@ const PrivatinsolvenzFormular = () => {
 
                                 {/* Ratenzahlungsrechner - funktioniert mit beiden Preisberechnungsmethoden */}
                                 <div className="bg-blue-50 p-4 rounded-lg">
-                                    <h3 className="font-medium mb-3">Ratenzahlung</h3>
+                                    <h3 className="font-medium mb-3">Ratenvereinbarung</h3>
                                     <div className="space-y-4">
                                         <div>
-                                            <label className="block mb-2">Gewünschte Laufzeit</label>
+                                            <label className="block mb-2">Anzahl der Raten</label>
                                             <select
                                                 name="ratenzahlungMonate"
                                                 value={formData.ratenzahlungMonate}
                                                 onChange={handleInputChange}
                                                 className="w-full p-2 border-[1px] rounded focus:outline-none focus:border-gray-400"
                                             >
-                                                <option value="2">2 Monate</option>
-                                                <option value="4">4 Monate</option>
-                                                <option value="6">6 Monate</option>
+                                                <option value="1">1 Rate</option>
+                                                <option value="2">2 Raten</option>
+                                                <option value="3">3 Raten</option>
+                                                <option value="4">4 Raten</option>
+                                                <option value="5">5 Raten</option>
+                                                <option value="6">6 Raten</option>
                                                 <option value="custom">Benutzerdefiniert</option>
                                             </select>
                                         </div>
 
                                         {formData.ratenzahlungMonate === 'custom' && (
                                             <div>
-                                                <label className="block mb-2">Anzahl der Monate (1-12)</label>
+                                                <label className="block mb-2">Anzahl der Raten (1-12)</label>
                                                 <input
                                                     type="number"
                                                     name="benutzerdefinierteMonate"
@@ -1226,7 +1829,7 @@ const PrivatinsolvenzFormular = () => {
                         </CardContent>
                     </Card>
 
-                    {/* Zustellungsart */}
+                    {/* Zustellungsart des Angebots */}
                     <Card className="mb-6 bg-white shadow-lg hover:shadow-xl transition-shadow">
                         <CardHeader>
                             <CardTitle>8. Zustellungsart des Angebots</CardTitle>
@@ -1234,9 +1837,9 @@ const PrivatinsolvenzFormular = () => {
                         <CardContent>
                             <div className="flex space-x-8 justify-center">
                                 <label className="flex items-center space-x-2 cursor-pointer">
-                                    <div className="p-3"> {/* Padding auf p-3 erhöht für größeren Klickbereich */}
+                                    <div className="p-3">
                                         <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
-                        ${formData.zustellungPost ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
+                                            ${formData.zustellungPost ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
                                             onClick={() => setFormData(prev => ({
                                                 ...prev,
                                                 zustellungPost: !prev.zustellungPost
@@ -1253,9 +1856,9 @@ const PrivatinsolvenzFormular = () => {
                                 </label>
 
                                 <label className="flex items-center space-x-2 cursor-pointer">
-                                    <div className="p-3"> {/* Padding auf p-3 erhöht für größeren Klickbereich */}
+                                    <div className="p-3">
                                         <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
-                        ${formData.zustellungEmail ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
+                                            ${formData.zustellungEmail ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
                                             onClick={() => setFormData(prev => ({
                                                 ...prev,
                                                 zustellungEmail: !prev.zustellungEmail
@@ -1273,157 +1876,23 @@ const PrivatinsolvenzFormular = () => {
                             </div>
                         </CardContent>
                     </Card>
-                    {/* Startdatum für Bearbeitung/Abrechnung */}
+
+                    {/* Freies Notizfeld */}
                     <Card className="mb-6 bg-white shadow-lg hover:shadow-xl transition-shadow">
                         <CardHeader>
-                            <CardTitle>9. Startdatum für Bearbeitung und Abrechnung</CardTitle>
+                            <CardTitle>9. Notizen</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="space-y-6">
-                                {/* Abrechnungsstart */}
-                                <div>
-                                    <h3 className="font-medium mb-3">Bearbeitung starten:</h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                        <div>
-                                            <label className="block mb-2">Tag</label>
-                                            <div className="flex items-center gap-8">
-                                                <label className="flex items-center space-x-2 cursor-pointer">
-                                                    <div className="p-3">
-                                                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
-                                    ${formData.bearbeitungStart === '1' ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
-                                                            onClick={() => setFormData(prev => ({
-                                                                ...prev,
-                                                                bearbeitungStart: '1'
-                                                            }))}
-                                                        >
-                                                            {formData.bearbeitungStart === '1' && (
-                                                                <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                                                </svg>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                    <span>zum 1.</span>
-                                                </label>
-
-                                                <label className="flex items-center space-x-2 cursor-pointer">
-                                                    <div className="p-3">
-                                                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
-                                    ${formData.bearbeitungStart === '15' ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
-                                                            onClick={() => setFormData(prev => ({
-                                                                ...prev,
-                                                                bearbeitungStart: '15'
-                                                            }))}
-                                                        >
-                                                            {formData.bearbeitungStart === '15' && (
-                                                                <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                                                </svg>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                    <span>zum 15.</span>
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <label className="block mb-2">Monat</label>
-                                            <select
-                                                name="bearbeitungMonat"
-                                                value={formData.bearbeitungMonat || ''}
-                                                onChange={handleInputChange}
-                                                className="w-full p-2 border-[1px] rounded focus:outline-none focus:border-gray-400"
-                                            >
-                                                <option value="">Aktueller Monat</option>
-                                                <option value="1">Januar</option>
-                                                <option value="2">Februar</option>
-                                                <option value="3">März</option>
-                                                <option value="4">April</option>
-                                                <option value="5">Mai</option>
-                                                <option value="6">Juni</option>
-                                                <option value="7">Juli</option>
-                                                <option value="8">August</option>
-                                                <option value="9">September</option>
-                                                <option value="10">Oktober</option>
-                                                <option value="11">November</option>
-                                                <option value="12">Dezember</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Abrechnungsstart */}
-                                <div>
-                                    <h3 className="font-medium mb-3">Abrechnung starten:</h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div>
-                                            <label className="block mb-2">Tag</label>
-                                            <div className="flex items-center gap-8">
-                                                <label className="flex items-center space-x-2 cursor-pointer">
-                                                    <div className="p-3">
-                                                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
-                                    ${formData.abrechnungStart === '1' ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
-                                                            onClick={() => setFormData(prev => ({
-                                                                ...prev,
-                                                                abrechnungStart: '1'
-                                                            }))}
-                                                        >
-                                                            {formData.abrechnungStart === '1' && (
-                                                                <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                                                </svg>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                    <span>zum 1.</span>
-                                                </label>
-
-                                                <label className="flex items-center space-x-2 cursor-pointer">
-                                                    <div className="p-3">
-                                                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center
-                                    ${formData.abrechnungStart === '15' ? 'border-green-500 bg-green-500' : 'border-gray-300'}`}
-                                                            onClick={() => setFormData(prev => ({
-                                                                ...prev,
-                                                                abrechnungStart: '15'
-                                                            }))}
-                                                        >
-                                                            {formData.abrechnungStart === '15' && (
-                                                                <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                                                </svg>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                    <span>zum 15.</span>
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <label className="block mb-2">Monat</label>
-                                            <select
-                                                name="abrechnungMonat"
-                                                value={formData.abrechnungMonat || ''}
-                                                onChange={handleInputChange}
-                                                className="w-full p-2 border-[1px] rounded focus:outline-none focus:border-gray-400"
-                                            >
-                                                <option value="">Aktueller Monat</option>
-                                                <option value="1">Januar</option>
-                                                <option value="2">Februar</option>
-                                                <option value="3">März</option>
-                                                <option value="4">April</option>
-                                                <option value="5">Mai</option>
-                                                <option value="6">Juni</option>
-                                                <option value="7">Juli</option>
-                                                <option value="8">August</option>
-                                                <option value="9">September</option>
-                                                <option value="10">Oktober</option>
-                                                <option value="11">November</option>
-                                                <option value="12">Dezember</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> {/* Hier wird das äußere div mit className="space-y-6" geschlossen */}
+                            <div className="bg-gray-50 p-4 rounded-lg">
+                                <textarea 
+                                    name="notizen"
+                                    value={formData.notizen || ''}
+                                    onChange={handleInputChange}
+                                    placeholder="Freie Notizen zur Beratung"
+                                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
+                                    rows="5"
+                                ></textarea>
+                            </div>
                         </CardContent>
                     </Card>
 
