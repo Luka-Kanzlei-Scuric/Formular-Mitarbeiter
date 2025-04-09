@@ -252,14 +252,14 @@ const PrivatinsolvenzFormular = () => {
         }));
     };
 
-    const saveFormData = async () => {
+    const saveFormData = async (setQualified = false) => {
         setIsSaving(true);
         setSaveError(null);
 
         try {
             const updatedData = {
                 ...formData,
-                qualifiziert: true // Setze qualifiziert auf true beim Speichern
+                qualifiziert: setQualified ? true : formData.qualifiziert // Nur setzen wenn explizit angefordert
             };
 
             console.log("📤 Sende Daten an Backend:", updatedData);
@@ -1896,14 +1896,22 @@ const PrivatinsolvenzFormular = () => {
                         </CardContent>
                     </Card>
 
-                    {/* Qualifiziert Button */}
-                    <div className="flex justify-center mt-6 mb-8">
+                    {/* Qualifiziert & Speichern Buttons */}
+                    <div className="flex justify-center space-x-4 mt-6 mb-8">
+                        <button
+                            className={`px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition-colors ${isSaving ? 'opacity-50' : ''}`}
+                            onClick={() => saveFormData(false)}
+                            disabled={isSaving}
+                        >
+                            {isSaving ? 'Wird gespeichert...' : 'Änderungen speichern'}
+                        </button>
+                        
                         <button
                             className={`px-6 py-3 ${formData.qualifiziert
                                 ? 'bg-gray-500 cursor-not-allowed'
                                 : 'bg-green-500 hover:bg-green-600'} 
                                 text-white font-semibold rounded-lg transition-colors ${isSaving ? 'opacity-50' : ''}`}
-                            onClick={saveFormData}
+                            onClick={() => saveFormData(true)}
                             disabled={isSaving || formData.qualifiziert}
                         >
                             {isSaving ? 'Wird gespeichert...' : formData.qualifiziert ? 'Bereits qualifiziert' : 'Qualifiziert'}
