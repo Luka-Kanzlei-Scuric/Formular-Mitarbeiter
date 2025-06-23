@@ -20,6 +20,17 @@ router.post('/test', (req, res) => {
 });
 
 // Hauptrouten
+// Route für die Suche nach Namen
+router.get('/search', async (req, res) => {
+    try {
+        await formController.searchFormsByName(req, res);
+    } catch (error) {
+        console.error("❌ Fehler bei GET /search:", error.message);
+        res.status(500).json({ error: "Interner Serverfehler" });
+    }
+});
+
+// Diese Route muss nach /search kommen, da sonst /search als taskId interpretiert wird
 router.get('/:taskId', async (req, res) => {
     try {
         await formController.getFormByTaskId(req, res);

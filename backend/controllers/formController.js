@@ -1,6 +1,7 @@
 const axios = require('axios');
 const Form = require('../models/Form');
 const { validationResult } = require('express-validator');
+const mongoose = require('mongoose');
 
 // Get Form by TaskId
 exports.getFormByTaskId = async (req, res) => {
@@ -116,6 +117,45 @@ exports.createForm = async (req, res) => {
 };
 
 // Update Form
+// Neue Funktion zum Suchen von Formularen nach Namen
+exports.searchFormsByName = async (req, res) => {
+    try {
+        const searchName = req.query.name;
+        
+        if (!searchName) {
+            return res.status(400).json({ message: 'Ein Suchname ist erforderlich' });
+        }
+        
+        console.log(`🔎 Suche nach Formularen mit Namen, der "${searchName}" enthält`);
+        
+        // Suche nach Formularen, deren leadName den Suchbegriff enthält (case-insensitive)
+        const forms = await Form.find({
+            leadName: { $regex: searchName, $options: 'i' }
+        }).select('taskId leadName vorname nachname createdAt').sort({ createdAt: -1 });
+        
+        if (forms.length === 0) {
+            console.warn(`⚠ Keine Formulare gefunden, die "${searchName}" im Namen enthalten`);
+            return res.status(404).json({ message: 'Keine passenden Formulare gefunden' });
+        }
+        
+        // Formatlieren der Ergebnisse mit URL
+        const formattedResults = forms.map(form => ({
+            taskId: form.taskId,
+            leadName: form.leadName,
+            vorname: form.vorname || '',
+            nachname: form.nachname || '',
+            erstelltAm: form.createdAt,
+            formURL: `${process.env.FRONTEND_URL}/form/${form.taskId}`
+        }));
+        
+        console.log(`✅ ${forms.length} Formulare gefunden für "${searchName}"`);
+        res.json(formattedResults);
+    } catch (error) {
+        console.error("❌ Fehler bei der Suche nach Formularen:", error.stack);
+        res.status(500).json({ message: "Interner Serverfehler" });
+    }
+};
+
 exports.updateForm = async (req, res) => {
     try {
         console.log(`🔄 Update-Request für TaskId ${req.params.taskId}`);

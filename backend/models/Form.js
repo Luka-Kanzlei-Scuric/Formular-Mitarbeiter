@@ -9,7 +9,8 @@ const formSchema = new mongoose.Schema({
     },
     leadName: {
         type: String,
-        required: true
+        required: true,
+        index: true // Index für die Suche nach Namen hinzugefügt
     },
     zustellungPost: {
         type: Boolean,
