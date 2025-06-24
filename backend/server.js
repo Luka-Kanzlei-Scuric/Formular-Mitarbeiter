@@ -14,9 +14,14 @@ const app = express();
 app.use(cors({
     origin: [
         'https://formular-mitarbeiter.vercel.app',
-        'http://localhost:3000'
+        'http://localhost:3000',
+        'http://localhost:5173',
+        'http://localhost:5174',
+        'https://*.vercel.app'
     ],
-    credentials: true
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Connect to MongoDB
