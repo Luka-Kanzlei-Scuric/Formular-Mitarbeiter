@@ -579,6 +579,8 @@ const PrivatinsolvenzFormular = () => {
                                             <option value="Rentner">Rentner</option>
                                             <option value="Arbeitslos">Arbeitslos</option>
                                             <option value="Bürgergeld">Bürgergeld</option>
+                                            <option value="EMR">EMR</option>
+                                            <option value="Krankengeld">Krankengeld</option>
                                             <option value="Selbstständig">Selbstständig</option>
                                         </select>
                                     </div>
@@ -1314,7 +1316,7 @@ const PrivatinsolvenzFormular = () => {
                                     </div>
 
                                     {/* P-Konto und Kontowechsel */}
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-5">
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-5">
                                         <div>
                                             <div className="flex items-center space-x-2 cursor-pointer mb-2">
                                                 <input
@@ -1332,6 +1334,28 @@ const PrivatinsolvenzFormular = () => {
                                                     value={formData.pKontoBemerkung || ''}
                                                     onChange={handleInputChange}
                                                     placeholder="Bemerkungen zum P-Konto"
+                                                    className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
+                                                    rows="2"
+                                                ></textarea>
+                                            )}
+                                        </div>
+                                        <div>
+                                            <div className="flex items-center space-x-2 cursor-pointer mb-2">
+                                                <input
+                                                    type="checkbox"
+                                                    name="pKontoEmpfohlen"
+                                                    checked={formData.pKontoEmpfohlen || false}
+                                                    onChange={handleInputChange}
+                                                    className="h-5 w-5 text-blue-600"
+                                                />
+                                                <span className="font-medium">P-Konto empfohlen</span>
+                                            </div>
+                                            {formData.pKontoEmpfohlen && (
+                                                <textarea
+                                                    name="pKontoEmpfohlenBemerkung"
+                                                    value={formData.pKontoEmpfohlenBemerkung || ''}
+                                                    onChange={handleInputChange}
+                                                    placeholder="Begründung für P-Konto Empfehlung"
                                                     className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent transition-all"
                                                     rows="2"
                                                 ></textarea>
@@ -1373,6 +1397,8 @@ const PrivatinsolvenzFormular = () => {
                                             <option value="">Bitte wählen</option>
                                             <option value="Privatrechtliche">Privatrechtliche</option>
                                             <option value="öffentlich rechtlich">öffentlich rechtlich</option>
+                                            <option value="Privat">Privat</option>
+                                            <option value="öffentliche">öffentliche</option>
                                         </select>
                                         <textarea
                                             name="schuldenartInfoBemerkung"
