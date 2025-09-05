@@ -252,14 +252,14 @@ const PrivatinsolvenzFormular = () => {
         }));
     };
 
-    const saveFormData = async (setQualified = false) => {
+    const saveFormData = async (setQualified = false, resetQualified = false) => {
         setIsSaving(true);
         setSaveError(null);
 
         try {
             const updatedData = {
                 ...formData,
-                qualifiziert: setQualified ? true : formData.qualifiziert // Nur setzen wenn explizit angefordert
+                qualifiziert: resetQualified ? false : (setQualified ? true : formData.qualifiziert)
             };
 
             console.log("📤 Sende Daten an Backend:", updatedData);
@@ -1942,6 +1942,16 @@ const PrivatinsolvenzFormular = () => {
                         >
                             {isSaving ? 'Wird gespeichert...' : formData.qualifiziert ? 'Bereits qualifiziert' : 'Qualifiziert'}
                         </button>
+                        
+                        {formData.qualifiziert && (
+                            <button
+                                className={`px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition-colors ${isSaving ? 'opacity-50' : ''}`}
+                                onClick={() => saveFormData(false, true)}
+                                disabled={isSaving}
+                            >
+                                {isSaving ? 'Wird zurückgesetzt...' : 'Qualifizierung zurücksetzen'}
+                            </button>
+                        )}
                     </div>
 
                     {saveError && (
