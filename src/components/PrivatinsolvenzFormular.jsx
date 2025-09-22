@@ -119,6 +119,7 @@ const PrivatinsolvenzFormular = () => {
         dispoBemerkung: '',
         pKonto: false,
         pKontoBemerkung: '',
+        pKontoBescheinigungBeantragen: false,
         kontoWechselEmpfohlen: false,
         kontoWechselEmpfohlenBemerkung: '',
         glaeubiger: '',
@@ -234,6 +235,37 @@ const PrivatinsolvenzFormular = () => {
             gesamtPreis,
             monate
         };
+    };
+
+    const sendPKontoEmail = async () => {
+        try {
+            setIsSaving(true);
+            const response = await fetch(`${BACKEND_URL}/api/send-pkonto-email`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    taskId: formData.taskId,
+                    name: `${formData.vorname} ${formData.nachname}`,
+                    adresse: `${formData.strasse} ${formData.hausnummer}, ${formData.plz} ${formData.wohnort}`,
+                    geburtsdatum: formData.geburtsdatum,
+                    hausbank: formData.hausbank,
+                    leadName: formData.leadName
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('E-Mail konnte nicht gesendet werden');
+            }
+
+            alert('E-Mail für P-Konto-Bescheinigung wurde erfolgreich gesendet!');
+        } catch (error) {
+            console.error('Fehler beim Senden der P-Konto E-Mail:', error);
+            setSaveError('E-Mail konnte nicht gesendet werden: ' + error.message);
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     const handleInputChange = (e) => {
@@ -1385,6 +1417,33 @@ const PrivatinsolvenzFormular = () => {
                                         </div>
                                     </div>
 
+                                    {/* P-Konto-Bescheinigung beantragen */}
+                                    <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-5">
+                                        <div className="flex items-center space-x-2 cursor-pointer mb-2">
+                                            <input
+                                                type="checkbox"
+                                                name="pKontoBescheinigungBeantragen"
+                                                checked={formData.pKontoBescheinigungBeantragen || false}
+                                                onChange={handleInputChange}
+                                                className="h-5 w-5 text-blue-600"
+                                            />
+                                            <span className="font-medium text-blue-800">P-Konto-Bescheinigung beantragen</span>
+                                        </div>
+                                        {formData.pKontoBescheinigungBeantragen && (
+                                            <div className="mt-3 p-3 bg-white rounded border">
+                                                <p className="text-sm text-gray-600 mb-2">
+                                                    Eine E-Mail wird automatisch an die Kanzlei gesendet mit den folgenden Daten:
+                                                </p>
+                                                <div className="bg-gray-50 p-2 rounded text-sm">
+                                                    <strong>Name:</strong> {formData.vorname} {formData.nachname}<br/>
+                                                    <strong>Adresse:</strong> {formData.strasse} {formData.hausnummer}, {formData.plz} {formData.wohnort}<br/>
+                                                    <strong>Geburtsdatum:</strong> {formData.geburtsdatum}<br/>
+                                                    <strong>Hausbank:</strong> {formData.hausbank}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+
                                     {/* Schuldenart */}
                                     <div className="mb-5">
                                         <label className="block mb-2 font-medium text-gray-700">Kurzinfo zu GLB/ Schuldenart</label>
@@ -1950,6 +2009,16 @@ const PrivatinsolvenzFormular = () => {
                                 disabled={isSaving}
                             >
                                 {isSaving ? 'Wird zurückgesetzt...' : 'Qualifizierung zurücksetzen'}
+                            </button>
+                        )}
+                        
+                        {formData.qualifiziert && formData.pKontoBescheinigungBeantragen && (
+                            <button
+                                className={`px-6 py-3 bg-purple-500 hover:bg-purple-600 text-white font-semibold rounded-lg transition-colors ${isSaving ? 'opacity-50' : ''}`}
+                                onClick={sendPKontoEmail}
+                                disabled={isSaving}
+                            >
+                                {isSaving ? 'E-Mail wird gesendet...' : 'P-Konto-Bescheinigung anfordern'}
                             </button>
                         )}
                     </div>

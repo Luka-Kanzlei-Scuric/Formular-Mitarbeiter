@@ -65,4 +65,14 @@ router.put('/:taskId', async (req, res) => {
     }
 });
 
+// P-Konto-Bescheinigung E-Mail Route
+router.post('/send-pkonto-email', async (req, res) => {
+    try {
+        await formController.sendPKontoEmail(req, res);
+    } catch (error) {
+        console.error("❌ Fehler bei POST /send-pkonto-email:", error);
+        res.status(500).json({ error: "Interner Serverfehler beim Senden der P-Konto E-Mail" });
+    }
+});
+
 module.exports = router;

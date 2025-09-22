@@ -403,3 +403,78 @@ exports.updateForm = async (req, res) => {
         res.status(500).json({ message: "Interner Serverfehler" });
     }
 };
+
+// Send P-Konto-Bescheinigung Email
+exports.sendPKontoEmail = async (req, res) => {
+    try {
+        const { taskId, name, adresse, geburtsdatum, hausbank, leadName } = req.body;
+        
+        console.log(`📧 P-Konto E-Mail wird gesendet für TaskId: ${taskId}`);
+        
+        // Make.com Webhook URL
+        const makeWebhookUrl = 'https://hook.eu2.make.com/cnjcefb77q4e4bm432t9x9i162wp22h2';
+        
+        // Daten für Make.com vorbereiten
+        const webhookData = {
+            type: 'pkonto_bescheinigung',
+            taskId: taskId,
+            name: name,
+            adresse: adresse,
+            geburtsdatum: geburtsdatum,
+            hausbank: hausbank,
+            leadName: leadName,
+            timestamp: new Date().toISOString(),
+            subject: `P-Konto-Bescheinigung Antrag - ${name} (${taskId})`,
+            message: `P-Konto-Bescheinigung Antrag
+
+Mandantendaten:
+- Name: ${name}
+- Adresse: ${adresse}
+- Geburtsdatum: ${geburtsdatum}
+- Hausbank: ${hausbank}
+- Lead Name: ${leadName}
+- Task ID: ${taskId}
+
+Bitte erstellen Sie eine P-Konto-Bescheinigung für den o.g. Mandanten.
+
+Mit freundlichen Grüßen
+Automatisches System`
+        };
+
+        // E-Mail über Make.com Webhook senden
+        const response = await axios.post(makeWebhookUrl, webhookData, {
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            timeout: 10000 // 10 Sekunden Timeout
+        });
+
+        console.log("✅ Make.com Webhook erfolgreich aufgerufen:", response.status);
+        
+        res.json({ 
+            success: true, 
+            message: "P-Konto E-Mail erfolgreich über Make.com versendet",
+            taskId: taskId,
+            webhookStatus: response.status
+        });
+        
+    } catch (error) {
+        console.error("❌ Fehler beim Senden der P-Konto E-Mail über Make.com:", error);
+        
+        // Detaillierte Fehlerbehandlung
+        let errorMessage = "Fehler beim Senden der E-Mail";
+        if (error.response) {
+            errorMessage = `Make.com Webhook Fehler: ${error.response.status} - ${error.response.statusText}`;
+        } else if (error.request) {
+            errorMessage = "Keine Antwort von Make.com Webhook erhalten";
+        } else {
+            errorMessage = error.message;
+        }
+        
+        res.status(500).json({ 
+            success: false,
+            message: errorMessage,
+            taskId: req.body.taskId
+        });
+    }
+};

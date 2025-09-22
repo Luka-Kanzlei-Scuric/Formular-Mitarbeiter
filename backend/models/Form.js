@@ -119,6 +119,7 @@ const formSchema = new mongoose.Schema({
     dispoBemerkung: String, // Neu hinzugefügt
     pKonto: Boolean, // Neu hinzugefügt
     pKontoBemerkung: String, // Neu hinzugefügt
+    pKontoBescheinigungBeantragen: Boolean, // P-Konto-Bescheinigung Feature
     kontoWechselEmpfohlen: Boolean, // Neu hinzugefügt
     kontoWechselEmpfohlenBemerkung: String, // Neu hinzugefügt
     glaeubiger: String,
