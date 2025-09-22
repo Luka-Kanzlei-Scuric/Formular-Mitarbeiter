@@ -407,12 +407,39 @@ exports.updateForm = async (req, res) => {
 // Send P-Konto-Bescheinigung Email
 exports.sendPKontoEmail = async (req, res) => {
     try {
-        const { taskId, name, adresse, geburtsdatum, hausbank, leadName } = req.body;
+        const { taskId, name, adresse, geburtsdatum, hausbank, bemerkungen, leadName } = req.body;
         
         console.log(`📧 P-Konto E-Mail wird gesendet für TaskId: ${taskId}`);
+        console.log('📦 Empfangene Daten:', req.body);
         
         // Make.com Webhook URL
         const makeWebhookUrl = 'https://hook.eu2.make.com/cnjcefb77q4e4bm432t9x9i162wp22h2';
+        
+        // E-Mail Nachricht zusammenstellen
+        let emailMessage = `P-Konto-Bescheinigung Antrag
+
+Mandantendaten:
+- Name: ${name}
+- Adresse: ${adresse}
+- Geburtsdatum: ${geburtsdatum}
+- Hausbank: ${hausbank}
+- Lead Name: ${leadName}
+- Task ID: ${taskId}`;
+
+        // Zusätzliche Bemerkungen hinzufügen, falls vorhanden
+        if (bemerkungen && bemerkungen.trim()) {
+            emailMessage += `
+
+Zusätzliche Bemerkungen:
+${bemerkungen}`;
+        }
+
+        emailMessage += `
+
+Bitte erstellen Sie eine P-Konto-Bescheinigung für den o.g. Mandanten.
+
+Mit freundlichen Grüßen
+Automatisches System`;
         
         // Daten für Make.com vorbereiten
         const webhookData = {
@@ -422,40 +449,32 @@ exports.sendPKontoEmail = async (req, res) => {
             adresse: adresse,
             geburtsdatum: geburtsdatum,
             hausbank: hausbank,
+            bemerkungen: bemerkungen || '',
             leadName: leadName,
             timestamp: new Date().toISOString(),
             subject: `P-Konto-Bescheinigung Antrag - ${name} (${taskId})`,
-            message: `P-Konto-Bescheinigung Antrag
-
-Mandantendaten:
-- Name: ${name}
-- Adresse: ${adresse}
-- Geburtsdatum: ${geburtsdatum}
-- Hausbank: ${hausbank}
-- Lead Name: ${leadName}
-- Task ID: ${taskId}
-
-Bitte erstellen Sie eine P-Konto-Bescheinigung für den o.g. Mandanten.
-
-Mit freundlichen Grüßen
-Automatisches System`
+            message: emailMessage
         };
+
+        console.log('📤 Sende an Make.com Webhook:', webhookData);
 
         // E-Mail über Make.com Webhook senden
         const response = await axios.post(makeWebhookUrl, webhookData, {
             headers: {
                 'Content-Type': 'application/json'
             },
-            timeout: 10000 // 10 Sekunden Timeout
+            timeout: 15000 // 15 Sekunden Timeout
         });
 
         console.log("✅ Make.com Webhook erfolgreich aufgerufen:", response.status);
+        console.log("📊 Webhook Response:", response.data);
         
         res.json({ 
             success: true, 
             message: "P-Konto E-Mail erfolgreich über Make.com versendet",
             taskId: taskId,
-            webhookStatus: response.status
+            webhookStatus: response.status,
+            webhookResponse: response.data
         });
         
     } catch (error) {
@@ -463,18 +482,31 @@ Automatisches System`
         
         // Detaillierte Fehlerbehandlung
         let errorMessage = "Fehler beim Senden der E-Mail";
+        let statusCode = 500;
+        
         if (error.response) {
+            // Webhook Server hat geantwortet, aber mit Fehler
+            console.error("❌ Webhook Response Error:", error.response.data);
             errorMessage = `Make.com Webhook Fehler: ${error.response.status} - ${error.response.statusText}`;
+            statusCode = error.response.status;
         } else if (error.request) {
-            errorMessage = "Keine Antwort von Make.com Webhook erhalten";
+            // Request wurde gesendet, aber keine Antwort erhalten
+            console.error("❌ No Response from Webhook:", error.request);
+            errorMessage = "Keine Antwort von Make.com Webhook erhalten - Timeout oder Netzwerkfehler";
+        } else if (error.code === 'ECONNABORTED') {
+            // Timeout
+            errorMessage = "Timeout beim Senden der E-Mail - Make.com Webhook antwortet nicht";
         } else {
+            // Anderer Fehler
+            console.error("❌ Other Error:", error.message);
             errorMessage = error.message;
         }
         
-        res.status(500).json({ 
+        res.status(statusCode).json({ 
             success: false,
             message: errorMessage,
-            taskId: req.body.taskId
+            taskId: req.body.taskId || 'unknown',
+            error: error.code || 'UNKNOWN_ERROR'
         });
     }
 };
