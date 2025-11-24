@@ -27,9 +27,29 @@ app.use(cors({
 // Connect to MongoDB
 connectDB();
 
-// Body Parser Middleware
-app.use(bodyParser.json());
+// Body Parser Middleware mit Error Handling
+app.use(bodyParser.json({
+    verify: (req, res, buf, encoding) => {
+        // Speichere den rohen Body für Debugging bei Parsing-Fehlern
+        req.rawBody = buf.toString(encoding || 'utf8');
+    }
+}));
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// JSON Parsing Error Handler
+app.use((err, req, res, next) => {
+    if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+        console.error('❌ JSON Parsing Fehler:');
+        console.error('Raw Body:', req.rawBody);
+        console.error('Error:', err.message);
+        return res.status(400).json({
+            message: 'Ungültiges JSON Format',
+            error: err.message,
+            receivedData: req.rawBody
+        });
+    }
+    next(err);
+});
 
 // Basic test route
 app.get('/', (req, res) => {
