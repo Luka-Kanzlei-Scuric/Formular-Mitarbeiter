@@ -12,6 +12,10 @@ const formSchema = new mongoose.Schema({
         required: true,
         index: true // Index für die Suche nach Namen hinzugefügt
     },
+    phoneNumber: {
+        type: String,
+        required: false
+    },
     zustellungPost: {
         type: Boolean,
         default: false

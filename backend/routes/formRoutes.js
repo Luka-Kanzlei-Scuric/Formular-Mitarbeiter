@@ -44,7 +44,8 @@ router.post(
     '/',
     [
         body('taskId').notEmpty().withMessage('taskId ist erforderlich'),
-        body('leadName').optional().isString().withMessage('leadName muss ein String sein')
+        body('leadName').optional().isString().withMessage('leadName muss ein String sein'),
+        body('phoneNumber').optional().isString().withMessage('phoneNumber muss ein String sein')
     ],
     async (req, res) => {
         try {

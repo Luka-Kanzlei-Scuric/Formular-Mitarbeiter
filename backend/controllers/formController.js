@@ -99,7 +99,8 @@ exports.createForm = async (req, res) => {
         // Formular in MongoDB erstellen
         const form = new Form({
             taskId: req.body.taskId,
-            leadName: req.body.leadName
+            leadName: req.body.leadName,
+            phoneNumber: req.body.phoneNumber
         });
 
         const savedForm = await form.save();
