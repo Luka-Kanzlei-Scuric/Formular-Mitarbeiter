@@ -386,6 +386,20 @@ const PrivatinsolvenzFormular = () => {
                                             className="w-full p-2 border-[1px] rounded focus:outline-none focus:border-gray-400" />
                                     </div>
                                 </div>
+                                <div className="flex items-center gap-4 mb-4">
+                                    <label className="flex items-center gap-2 min-w-[200px]">
+                                        <span>Telefonnummer</span>
+                                    </label>
+                                    <div className="flex-1">
+                                        <input
+                                            type="tel"
+                                            name="phoneNumber"
+                                            value={formData.phoneNumber || ''}
+                                            onChange={handleInputChange}
+                                            placeholder="Telefonnummer"
+                                            className="w-full p-2 border-[1px] rounded focus:outline-none focus:border-gray-400" />
+                                    </div>
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
