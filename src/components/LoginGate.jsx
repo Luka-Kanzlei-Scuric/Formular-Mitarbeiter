@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { AUTH_EXPIRED_EVENT, getToken, login } from '../lib/auth';
+import { AUTH_EXPIRED_EVENT, getToken, login, logout } from '../lib/auth';
 
 function LoginGate({ children }) {
   const [loggedIn, setLoggedIn] = useState(Boolean(getToken()));
@@ -28,7 +28,12 @@ function LoginGate({ children }) {
     }
   };
 
-  if (loggedIn) return children;
+  if (loggedIn) return <>
+    <div className="max-w-4xl mx-auto px-4 pt-3 text-right">
+      <button type="button" onClick={logout} className="text-sm text-blue-600 hover:underline">Abmelden</button>
+    </div>
+    {children}
+  </>;
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">

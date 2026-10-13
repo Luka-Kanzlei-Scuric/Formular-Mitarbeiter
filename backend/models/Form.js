@@ -212,9 +212,14 @@ const formSchema = new mongoose.Schema({
         }
     },
     
-    notizen: String // Neues Notizfeld
+    notizen: String,
+    makeDelivery: {
+        status: { type: String, enum: ['pending', 'accepted', 'failed', 'disabled'] },
+        attemptedAt: Date
+    }
 }, {
-    timestamps: true
+    timestamps: true,
+    optimisticConcurrency: true
 });
 
 module.exports = mongoose.model('Form', formSchema);

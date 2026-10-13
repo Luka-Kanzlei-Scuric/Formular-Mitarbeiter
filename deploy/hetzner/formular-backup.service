@@ -1,0 +1,11 @@
+[Unit]
+Description=Encrypted off-host backup of Formular MongoDB
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/formular/deploy/hetzner
+EnvironmentFile=/etc/formular-backup.env
+ExecStart=/opt/formular/deploy/hetzner/backup.sh
+TimeoutStartSec=30min

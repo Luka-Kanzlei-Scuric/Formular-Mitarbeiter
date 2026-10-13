@@ -1,0 +1,23 @@
+{$FORMULAR_DOMAIN} {
+    encode zstd gzip
+    header {
+        X-InsoCore-Env {$APP_ENV}
+        X-Content-Type-Options nosniff
+        Referrer-Policy no-referrer
+        X-Frame-Options DENY
+        -Server
+    }
+    handle /api/* {
+        reverse_proxy backend:5001
+    }
+    handle {
+        root * /srv/formular
+        @assets path /assets/*
+        header @assets Cache-Control "public, max-age=31536000, immutable"
+        @pages not path /assets/*
+        header @pages Cache-Control "no-cache"
+        try_files {path} /index.html
+        file_server
+    }
+    # No access log: request paths may contain client identifiers or search names.
+}

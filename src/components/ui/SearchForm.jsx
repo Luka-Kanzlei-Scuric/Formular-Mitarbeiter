@@ -21,15 +21,12 @@ function SearchForm() {
       });
       
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Server-Antwort:', errorText);
         throw new Error(`Fehler: ${response.status}`);
       }
       
       const data = await response.json();
       setResults(data);
     } catch (err) {
-      console.error('Fehler bei der Suche:', err);
       setError(`Fehler bei der Suche: ${err.message}. Bitte versuchen Sie es später erneut.`);
     } finally {
       setLoading(false);
