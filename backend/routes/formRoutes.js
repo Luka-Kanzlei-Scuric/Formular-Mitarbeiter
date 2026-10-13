@@ -3,21 +3,13 @@ const { body } = require('express-validator');
 const router = express.Router();
 const formController = require('../controllers/formController');
 
-// Middleware für Logging
+// Middleware für Logging (ohne Body und ohne Query — dort stehen Mandantendaten)
 const requestLogger = (req, res, next) => {
-    console.log(`📩 [${req.method}] Anfrage an ${req.originalUrl}`);
-    console.log("📦 Body:", req.body);
+    console.log(`📩 [${req.method}] Anfrage an ${req.baseUrl}${req.path}`);
     next();
 };
 
 router.use(requestLogger);
-
-// Test Route
-router.post('/test', (req, res) => {
-    console.log("✅ Test Route erreicht!");
-    console.log("📦 Body:", req.body);
-    res.json({ message: "Test erfolgreich!" });
-});
 
 // Hauptrouten
 // Route für die Suche nach Namen

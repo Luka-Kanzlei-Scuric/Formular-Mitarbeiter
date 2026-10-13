@@ -5,8 +5,7 @@ import { Alert, AlertDescription } from './ui/alert';
 import { AlertTriangle } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import { getPfaendungsbetrag } from '../lib/pfaendungsberechnung';
-
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://privatinsolvenz-backend.onrender.com';
+import { apiFetch } from '../lib/auth';
 
 const ErrorDisplay = ({ error }) => (
     <div className="p-4 bg-red-100 text-red-700 rounded">
@@ -159,13 +158,11 @@ const PrivatinsolvenzFormular = () => {
         try {
             console.group('LoadFormData Debug');
             console.log('TaskId:', taskId);
-            console.log('Backend URL:', BACKEND_URL);
 
-            const response = await fetch(`${BACKEND_URL}/api/forms/${taskId}`);
+            const response = await apiFetch(`/api/forms/${taskId}`);
             console.log('Response status:', response.status);
 
             const data = await response.json();
-            console.log('Received data:', data);
             console.groupEnd();
 
             if (!response.ok) {
@@ -257,9 +254,8 @@ const PrivatinsolvenzFormular = () => {
                 leadName: formData.leadName
             };
 
-            console.log('📧 Sende P-Konto E-Mail mit Daten:', pKontoData);
 
-            const response = await fetch(`${BACKEND_URL}/api/forms/send-pkonto-email`, {
+            const response = await apiFetch(`/api/forms/send-pkonto-email`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -310,8 +306,7 @@ const PrivatinsolvenzFormular = () => {
                 qualifiziert: resetQualified ? false : (setQualified ? true : formData.qualifiziert)
             };
 
-            console.log("📤 Sende Daten an Backend:", updatedData);
-            const response = await fetch(`${BACKEND_URL}/api/forms/${taskId}`, {
+            const response = await apiFetch(`/api/forms/${taskId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
