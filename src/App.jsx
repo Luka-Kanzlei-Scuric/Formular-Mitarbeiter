@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import PrivatinsolvenzFormular from './components/PrivatinsolvenzFormular';
 import SearchForm from './components/ui/SearchForm';
+import LoginGate from './components/LoginGate';
 
 const Home = () => (
   <div className="p-8">
@@ -13,11 +14,13 @@ const Home = () => (
 function App() {
   return (
     <div className="min-h-screen bg-gray-50">
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="form/:taskId" element={<PrivatinsolvenzFormular />} />
-        <Route path="search" element={<SearchForm />} />
-      </Routes>
+      <LoginGate>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="form/:taskId" element={<PrivatinsolvenzFormular />} />
+          <Route path="search" element={<SearchForm />} />
+        </Routes>
+      </LoginGate>
     </div>
   );
 }

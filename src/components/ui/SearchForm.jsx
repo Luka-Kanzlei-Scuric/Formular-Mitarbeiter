@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { apiFetch } from '../../lib/auth';
 
 function SearchForm() {
   const [searchName, setSearchName] = useState('');
@@ -12,31 +13,20 @@ function SearchForm() {
     setError('');
     
     try {
-      // Die tatsächliche Backend-URL verwenden
-      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://dashboard-l-backend.onrender.com';
-      
-      console.log(`Suche nach ${searchName} auf ${backendUrl}/api/forms/search`);
-      
-      const response = await fetch(`${backendUrl}/api/forms/search?name=${encodeURIComponent(searchName)}`, {
+      const response = await apiFetch(`/api/forms/search?name=${encodeURIComponent(searchName)}`, {
         method: 'GET',
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include'
+          'Accept': 'application/json'
+        }
       });
       
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error('Server-Antwort:', errorText);
         throw new Error(`Fehler: ${response.status}`);
       }
       
       const data = await response.json();
-      console.log('Suchergebnisse:', data);
       setResults(data);
     } catch (err) {
-      console.error('Fehler bei der Suche:', err);
       setError(`Fehler bei der Suche: ${err.message}. Bitte versuchen Sie es später erneut.`);
     } finally {
       setLoading(false);

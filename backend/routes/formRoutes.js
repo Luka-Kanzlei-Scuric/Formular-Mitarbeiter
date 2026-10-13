@@ -1,79 +1,13 @@
-const express = require('express');
+const router = require('express').Router();
 const { body } = require('express-validator');
-const router = express.Router();
-const formController = require('../controllers/formController');
-
-// Middleware für Logging
-const requestLogger = (req, res, next) => {
-    console.log(`📩 [${req.method}] Anfrage an ${req.originalUrl}`);
-    console.log("📦 Body:", req.body);
-    next();
-};
-
-router.use(requestLogger);
-
-// Test Route
-router.post('/test', (req, res) => {
-    console.log("✅ Test Route erreicht!");
-    console.log("📦 Body:", req.body);
-    res.json({ message: "Test erfolgreich!" });
-});
-
-// Hauptrouten
-// Route für die Suche nach Namen
-router.get('/search', async (req, res) => {
-    try {
-        await formController.searchFormsByName(req, res);
-    } catch (error) {
-        console.error("❌ Fehler bei GET /search:", error.message);
-        res.status(500).json({ error: "Interner Serverfehler" });
-    }
-});
-
-// Diese Route muss nach /search kommen, da sonst /search als taskId interpretiert wird
-router.get('/:taskId', async (req, res) => {
-    try {
-        await formController.getFormByTaskId(req, res);
-    } catch (error) {
-        console.error("❌ Fehler bei GET /:taskId:", error.message);
-        res.status(500).json({ error: "Interner Serverfehler" });
-    }
-});
-
-router.post(
-    '/',
-    [
-        body('taskId').notEmpty().withMessage('taskId ist erforderlich'),
-        body('leadName').optional().isString().withMessage('leadName muss ein String sein'),
-        body('phoneNumber').optional().isString().withMessage('phoneNumber muss ein String sein')
-    ],
-    async (req, res) => {
-        try {
-            await formController.createForm(req, res);
-        } catch (error) {
-            console.error("❌ Fehler bei POST /:", error.message);
-            res.status(500).json({ error: "Interner Serverfehler" });
-        }
-    }
-);
-
-router.put('/:taskId', async (req, res) => {
-    try {
-        await formController.updateForm(req, res);
-    } catch (error) {
-        console.error("❌ Fehler bei PUT /:taskId:", error);
-        res.status(500).json({ error: "Interner Serverfehler" });
-    }
-});
-
-// P-Konto-Bescheinigung E-Mail Route
-router.post('/send-pkonto-email', async (req, res) => {
-    try {
-        await formController.sendPKontoEmail(req, res);
-    } catch (error) {
-        console.error("❌ Fehler bei POST /send-pkonto-email:", error);
-        res.status(500).json({ error: "Interner Serverfehler beim Senden der P-Konto E-Mail" });
-    }
-});
-
+const controller = require('../controllers/formController');
+router.get('/search', controller.searchFormsByName);
+router.post('/send-pkonto-email', controller.sendPKontoEmail);
+router.get('/:taskId', controller.getFormByTaskId);
+router.post('/', [
+    body('taskId').isString().isLength({ min: 1, max: 128 }).matches(/^[a-zA-Z0-9_-]+$/),
+    body('leadName').isString().trim().isLength({ min: 1, max: 200 }),
+    body('phoneNumber').optional().isString().isLength({ max: 100 }),
+], controller.createForm);
+router.put('/:taskId', controller.updateForm);
 module.exports = router;

@@ -5,8 +5,7 @@ import { Alert, AlertDescription } from './ui/alert';
 import { AlertTriangle } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import { getPfaendungsbetrag } from '../lib/pfaendungsberechnung';
-
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://privatinsolvenz-backend.onrender.com';
+import { apiFetch } from '../lib/auth';
 
 const ErrorDisplay = ({ error }) => (
     <div className="p-4 bg-red-100 text-red-700 rounded">
@@ -17,7 +16,6 @@ const ErrorDisplay = ({ error }) => (
 
 const PrivatinsolvenzFormular = () => {
     const { taskId } = useParams();
-    console.log("🔍 TaskId aus URL:", taskId);
 
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -157,23 +155,11 @@ const PrivatinsolvenzFormular = () => {
     const loadFormData = async (taskId) => {
         setIsLoading(true);
         try {
-            console.group('LoadFormData Debug');
-            console.log('TaskId:', taskId);
-            console.log('Backend URL:', BACKEND_URL);
-
-            const response = await fetch(`${BACKEND_URL}/api/forms/${taskId}`);
-            console.log('Response status:', response.status);
-
+            const response = await apiFetch(`/api/forms/${taskId}`);
             const data = await response.json();
-            console.log('Received data:', data);
-            console.groupEnd();
 
             if (!response.ok) {
                 throw new Error(`Server responded with ${response.status}`);
-            }
-
-            if (!data.taskId) {
-                console.warn('Warning: Received data has no taskId', data);
             }
 
             setFormData(prevState => ({
@@ -184,7 +170,6 @@ const PrivatinsolvenzFormular = () => {
             setOriginalData(data);
 
         } catch (error) {
-            console.error('Error in loadFormData:', error);
             setError(error);
         } finally {
             setIsLoading(false);
@@ -257,9 +242,8 @@ const PrivatinsolvenzFormular = () => {
                 leadName: formData.leadName
             };
 
-            console.log('📧 Sende P-Konto E-Mail mit Daten:', pKontoData);
 
-            const response = await fetch(`${BACKEND_URL}/api/forms/send-pkonto-email`, {
+            const response = await apiFetch(`/api/forms/send-pkonto-email`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -273,11 +257,9 @@ const PrivatinsolvenzFormular = () => {
                 throw new Error(result.message || 'E-Mail konnte nicht gesendet werden');
             }
 
-            alert('E-Mail für P-Konto-Bescheinigung wurde erfolgreich gesendet!');
-            console.log('✅ P-Konto E-Mail erfolgreich gesendet:', result);
+            alert('Die P-Konto-Anfrage wurde an Make.com übergeben.');
             
         } catch (error) {
-            console.error('Fehler beim Senden der P-Konto E-Mail:', error);
             setSaveError('E-Mail konnte nicht gesendet werden: ' + error.message);
         } finally {
             setIsSaving(false);
@@ -310,8 +292,7 @@ const PrivatinsolvenzFormular = () => {
                 qualifiziert: resetQualified ? false : (setQualified ? true : formData.qualifiziert)
             };
 
-            console.log("📤 Sende Daten an Backend:", updatedData);
-            const response = await fetch(`${BACKEND_URL}/api/forms/${taskId}`, {
+            const response = await apiFetch(`/api/forms/${taskId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -320,16 +301,19 @@ const PrivatinsolvenzFormular = () => {
                 body: JSON.stringify(updatedData)
             });
 
-            if (!response.ok) throw new Error('Fehler beim Speichern');
-
             const data = await response.json();
-            console.log('✅ Daten erfolgreich gespeichert:', data);
+            if (!response.ok) throw new Error(data.message || 'Fehler beim Speichern');
 
             // Update lokalen State
-            setFormData(updatedData);
+            setFormData(data);
+            setOriginalData(data);
+            if (data._integration?.status !== 'accepted') {
+                setSaveError(data._integration?.status === 'disabled'
+                    ? 'Formular gespeichert. Die Übergabe an Make.com ist deaktiviert.'
+                    : 'Formular gespeichert. Die Übergabe an Make.com ist fehlgeschlagen; bitte prüfen lassen.');
+            }
         } catch (error) {
-            console.error('❌ Fehler beim Speichern:', error);
-            setSaveError('Fehler beim Speichern');
+            setSaveError(error.message);
         } finally {
             setIsSaving(false);
         }

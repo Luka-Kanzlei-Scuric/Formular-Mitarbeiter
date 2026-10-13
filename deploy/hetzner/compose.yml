@@ -1,0 +1,125 @@
+name: formular
+services:
+  tools:
+    profiles: [operator]
+    build:
+      context: ../..
+      dockerfile: deploy/hetzner/Dockerfile.tools
+      args:
+        MONGO_IMAGE: ${MONGO_IMAGE:?Set MONGO_IMAGE}
+    volumes:
+      - ./migration:/work
+    networks: [app, database]
+    # Operator-only container. No inherited production application secrets.
+    read_only: true
+    tmpfs: [/tmp]
+
+  web:
+    build:
+      context: ../..
+      args:
+        VITE_BACKEND_URL: ""
+    environment:
+      FORMULAR_DOMAIN: ${FORMULAR_DOMAIN:?Set FORMULAR_DOMAIN}
+      APP_ENV: ${APP_ENV:?Set APP_ENV}
+    ports:
+      - "${HTTP_BIND:-0.0.0.0}:${HTTP_PORT:-80}:80"
+      - "${HTTPS_BIND:-0.0.0.0}:${HTTPS_PORT:-443}:443"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    mem_limit: 256m
+    networks: [app]
+
+  backend:
+    build: ../../backend
+    environment:
+      NODE_ENV: production
+      APP_ENV: ${APP_ENV:?Set APP_ENV}
+      FRONTEND_URL: ${FRONTEND_URL:?Set FRONTEND_URL}
+      MONGODB_DB_NAME: ${MONGODB_DB_NAME:-formular}
+      MONGODB_URI_FILE: /run/secrets/mongo_app_uri
+      AUTH_SECRET_FILE: /run/secrets/auth_secret
+      STAFF_PASSWORD_FILE: /run/secrets/staff_password
+      INTEGRATION_API_KEY_FILE: /run/secrets/integration_key
+      MAKE_UPDATE_WEBHOOK_URL_FILE: /run/secrets/make_update_url
+      MAKE_PKONTO_WEBHOOK_URL_FILE: /run/secrets/make_pkonto_url
+      MAKE_WEBHOOKS_ENABLED: ${MAKE_WEBHOOKS_ENABLED:-false}
+      MAINTENANCE_MODE: ${MAINTENANCE_MODE:-true}
+      CORS_ORIGINS: ${CORS_ORIGINS:-}
+      TRUST_PROXY: uniquelocal
+      PORT: 5001
+      RELEASE_SHA: ${RELEASE_SHA:?Set RELEASE_SHA}
+    secrets: [mongo_app_uri, auth_secret, staff_password, integration_key, make_update_url, make_pkonto_url]
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:5001/api/health/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 7s
+      retries: 4
+      start_period: 15s
+    depends_on:
+      mongo:
+        condition: service_healthy
+    init: true
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: unless-stopped
+    stop_grace_period: 30s
+    mem_limit: 512m
+    networks: [app, database]
+
+  mongo:
+    # Set the image to the verified source MongoDB major/FCV before migration.
+    image: ${MONGO_IMAGE:?Set a versioned MONGO_IMAGE matching the source}
+    entrypoint: ["bash", "/opt/formular/mongo-entrypoint.sh"]
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/mongo_admin_password
+    secrets: [mongo_admin_password, mongo_keyfile, mongo_app_password]
+    volumes:
+      - ${MONGO_DATA_PATH:?Set an encrypted Mongo data path}:/data/db
+      - ./mongo:/opt/formular:ro
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--nodb", "/opt/formular/health.js"]
+      interval: 10s
+      timeout: 7s
+      retries: 6
+      start_period: 30s
+    restart: unless-stopped
+    stop_grace_period: 60s
+    mem_limit: 4g
+    networks: [database]
+
+secrets:
+  mongo_admin_password:
+    file: ./secrets/mongo-admin-password
+  mongo_keyfile:
+    file: ./secrets/mongo-keyfile
+  mongo_app_password:
+    file: ./secrets/mongo-app-password
+  mongo_app_uri:
+    file: ./secrets/mongo-app-uri
+  auth_secret:
+    file: ./secrets/auth-secret
+  staff_password:
+    file: ./secrets/staff-password
+  integration_key:
+    file: ./secrets/integration-key
+  make_update_url:
+    file: ./secrets/make-update-url
+  make_pkonto_url:
+    file: ./secrets/make-pkonto-url
+
+networks:
+  app: {}
+  database:
+    internal: true
+volumes:
+  caddy_data: {}
+  caddy_config: {}

@@ -1,0 +1,10 @@
+ARG MONGO_IMAGE=mongo:8.0
+FROM ${MONGO_IMAGE} AS mongo-tools
+FROM node:24-bookworm-slim
+RUN apt-get update && apt-get install -y --no-install-recommends libgssapi-krb5-2 ca-certificates && rm -rf /var/lib/apt/lists/*
+COPY --from=mongo-tools /usr/bin/mongodump /usr/bin/mongorestore /usr/local/bin/
+WORKDIR /app
+COPY backend/package*.json ./
+RUN npm ci --omit=dev --ignore-scripts
+COPY backend/scripts ./scripts
+ENTRYPOINT ["node", "scripts/migration.js"]
